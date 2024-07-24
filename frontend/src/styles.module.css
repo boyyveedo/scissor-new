@@ -1,0 +1,240 @@
+/*
+*{
+  border: 1px solid red;
+  margin: 0;
+}
+*>*{
+  border: 1px solid blue;
+}
+*>*>*{
+  border: 1px solid black;
+}
+*>*>*>*{
+  border: 1px solid green;
+}
+*/
+*{
+  font-family: 'Open Sans', sans-serif;
+  margin: 0;
+}
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+
+#particles-js{
+  position: absolute;
+  width: 100%;
+  height: 230%;
+  background-color: rgba(0, 24, 69);
+  background-image: url("");
+  background-repeat: no-repeat;
+  background-size: 20%;
+  background-position: 50% 50%;
+  z-index: -10;
+  margin-top: -40vh;
+}
+.logo-css{
+  color: #FFF !important;
+  font-size: 1.6em !important;
+}
+.orange{
+  color: orange;
+}
+.l-a{
+  margin-right: 4px;
+}
+.r-a{
+  margin-left: 4px;
+}
+.real-nav{
+  display: flex;
+  justify-content: space-between;
+  background: rgba(0, 18, 51);
+  padding: 4px;
+}
+.real-nav .l-align{
+  margin-top: 10px;
+  margin-bottom: 10px !important;
+}
+.real-nav .l-align a{
+  font-size: 1.2em;
+  margin-top: 10px;
+  margin-right: 10px;
+  color: rgba(4, 102, 200);
+  text-decoration: none;
+}
+.real-nav .l-align a:hover{
+  color: rgba(3, 83, 164);
+}
+.real-nav .r-align .github-logo{
+  width: 120px;
+  border-radius: 8px;
+  padding: 1px 1px;
+  background: #FFF;
+  margin-right: 20px;
+  transform: scale(1);
+  margin-top: 6px;
+  -webkit-box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
+  box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
+}
+.github-img-mob{
+  width: 40px !important;
+  display: none;
+  border-radius: 100% !important;
+  padding: 2px !important;
+}
+.home{
+  text-align: center;
+  padding: 150px 0px 10px 0px;
+  color: #FFF;
+  border: 0px solid red;
+}
+.home .inner-home-bind h1{
+  font-size: 2.5em;
+}
+.home .faded-quote{
+  color: #5C677D;
+  font-style: oblique;
+  font-size: 1.1em;
+  max-width: 60vw;
+  margin: 0 auto;
+}
+#link-shortner-input{
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 10px;
+}
+#link-shortner-input .input-link{
+  display: block;
+  width: 96%;
+  font-size: 1.5em;
+  margin: 0 auto;
+  border-radius: 8px;
+  padding: 10px 10px;
+  background: #33415C;
+  border: 0px;
+  border: 2px solid #000;
+}
+#link-shortner-input .input-link:focus{
+  outline: 0px;
+}
+.home #link-shortner-input .btn-a{
+  display: block;
+  width: 100%;
+  margin: 0 auto;
+  margin-bottom: 10vh; /* add this to last element of home section */
+  margin-top: 30px;
+  text-decoration: none;
+  color: #FFF;
+  font-size: 1.2em;
+  border-radius: 8px;
+  padding: 10px 10px;
+  background: #33415C;
+  -webkit-box-shadow: 6px 6px 4px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 6px 6px 4px 0px rgba(0,0,0,0.75);
+  box-shadow: 6px 6px 4px 0px rgba(0,0,0,0.75);
+  border: 0px;
+}
+.home #link-shortner-input .btn-a:hover{
+  -webkit-box-shadow: inset 0px 0px 0px 0px rgba(0,0,0,0.75);
+-moz-box-shadow: inset 0px 0px 0px 0px rgba(0,0,0,0.75);
+box-shadow: 4px 4px 0px 0px rgba(0,0,0,0.75);
+}
+#built-with{
+  max-width: 550px;
+  margin: 0 auto;
+}
+#built-with .logo{
+  width: 50px;
+}
+.marquee-imgs img{
+  margin-right: 50px;
+}
+.features{
+  background: rgba(0, 18, 51);
+  padding: 40px 10px;
+  margin-top: 5vh;
+  color: #FFF;
+  text-align: center;
+}
+.features h2{
+  margin: 0 auto;
+}
+.sub-features-card-container{
+  display: flex;
+  justify-content: space-around;
+}
+.card{
+  width: 28%;
+  border: 0px solid #FFF;
+  padding: 8px;
+  border-radius: 8px;
+  background: #002855;
+  -webkit-box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
+  box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
+}
+.card img{
+  width: 50px;
+}
+.card h3{
+  font-size: 1.5em;
+  margin-right: 2px;
+  margin-top: 10px;
+}
+.card p{
+  font-size: 1.3em;
+  margin-right: 2px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.highlighted-div-me{
+  padding: 50px 50px;
+  border: 2px solid #FFF;
+  max-width: 600px;
+  margin: 0 auto;
+  margin-top: 10vh;
+  border-radius: 9px;
+  background: rgba(0, 18, 51);
+  -webkit-box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
+  box-shadow: 0px 0px 40px 0px rgba(0,0,0,0.75);
+}
+.highlighted-div-me p{
+  color: #FFF;
+  font-size: 1.3em;
+}
+.new-link::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #3bff6f;
+  opacity: 1; /* Firefox */
+}
+.new-link::-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #3bff6f;
+}
+.new-link::-ms-input-placeholder { /* Microsoft Edge */
+  color: #3bff6f;
+}
+@media only screen and (max-width: 600px) {
+  .github-logo{
+    display: none;
+  }
+  .github-img-mob{
+    display: block !important;
+  }
+  .input-link{
+    width: 95% !important;
+  }
+  .features{
+    padding: 10px;
+  }
+  .sub-features-card-container{
+    flex-direction: column;
+  }
+  .card{
+    width: 90%;
+    margin: 0 auto;
+    margin-top: 40px;
+  }
+  #particles-js{
+    height: 300%;
+  }
+}

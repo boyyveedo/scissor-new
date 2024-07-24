@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const shortUrlController_1 = require("../controllers/shortUrlController");
+const qrCodeController_1 = require("../controllers/qrCodeController");
+const shortUrlController_2 = require("../controllers/shortUrlController");
+// import validateLink from '../middleware/validateLink';
+// import shortUrl from '../shema/shortUrl';
+const routes = (0, express_1.Router)();
+routes.get('/analytics', shortUrlController_2.getAnalytics);
+routes.get('/generate', qrCodeController_1.getQRCode);
+routes.post('/shorten', shortUrlController_1.createShortUrl);
+routes.get('/:shortId', shortUrlController_1.handleRedirect);
+exports.default = routes;
