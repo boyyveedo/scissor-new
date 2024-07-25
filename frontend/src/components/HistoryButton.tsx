@@ -11,7 +11,8 @@ const HistoryButton: React.FC = () => {
             console.log(token)
             const response = await axios.get("http://localhost:4003/analytics", {
                 headers: {
-                    authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`, // Include Auth0 access token
                 },
             });
             console.log(response.data);
