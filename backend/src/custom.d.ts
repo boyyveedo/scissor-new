@@ -1,13 +1,9 @@
-// custom.d.ts
-import { User } from 'oidc-client';
+import { Request } from 'express';
 
-declare module 'express-serve-static-core' {
-    interface Request {
-        oidc?: {
-            user?: {
-                sub: string;
-                // other user properties if needed
-            }
-        }
-    }
+interface User {
+    sub: string;
+}
+
+export interface CustomRequest extends Request {
+    user?: User;
 }

@@ -18,7 +18,7 @@ export async function createShortUrlService(destination: string, userId: string,
 }
 
 export async function getShortUrlByShortId(shortId: string) {
-    const short = await shortUrl.findOne({ shortId });
+    const short = await shortUrl.findOne({ $or: [{ shortId }, { customAlias: shortId }] });
     if (!short) {
         throw new Error('URL not found');
     }
