@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Shortener from "./Shortener";
 import CallToAction from "./CallToAction";
 import { TiDeleteOutline } from "react-icons/ti";
 import UrlList from "./UrlList";

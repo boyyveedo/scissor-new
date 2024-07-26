@@ -1,16 +1,26 @@
 import React from 'react';
 import axios from 'axios';
+import { useAuth0 } from '@auth0/auth0-react';
+
 
 const AnalyticsButton: React.FC = () => {
+    const { getAccessTokenSilently } = useAuth0();
+
     const handleCallApi = async () => {
         try {
-            const response = await axios.get("http://localhost:4003");
+            const token = await getAccessTokenSilently();
+            console.log(token)
+            const response = await axios.get("http://localhost:4003/analytics", {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`, // Include Auth0 access token
+                },
+            });
             console.log(response.data);
         } catch (error) {
-            console.error("Error calling API:", error);
+            console.error("Error calling protected API:", error);
         }
     };
-
     return (
         <div>
             <button

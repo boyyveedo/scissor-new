@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useAuth0 } from '@auth0/auth0-react';
 import { SERVER_ENDPOINTS } from '../config';
+
+const apiUrl = 'http://localhost:4003/shorten';
 
 const URLShortForm: React.FC = () => {
     const [destination, setDestination] = useState<string>('');
     const [customAlias, setCustomAlias] = useState<string>('');
-    const [shortUrl, setShortUrl] = useState<{ shortId: string; } | null>(null);
+    const [shortUrl, setShortUrl] = useState<{ shortId: string } | null>(null);
     const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const { getAccessTokenSilently, user } = useAuth0();
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -26,12 +30,29 @@ const URLShortForm: React.FC = () => {
         }
 
         try {
-            const result = await axios.post(`${SERVER_ENDPOINTS}/shorten`, {
+            const token = await getAccessTokenSilently();
+            if (!user || !user.sub) {
+                setError('User information is unavailable');
+                return;
+            }
+            const auth0Id = user.sub;
+
+            const result = await axios.post(apiUrl, {
                 destination,
                 customAlias,
+                auth0Id,
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
             });
-            setShortUrl(result.data.newUrl); // Assuming 'newUrl' contains { shortId: string }
-            setDestination(" ");
+
+            if (result.data && result.data.shortId) {
+                setShortUrl(result.data);
+            } else {
+                setError('Unexpected response from the server');
+            }
         } catch (err: any) {
             console.error('Error:', err.response ? err.response.data : err.message);
             setError('Failed to shorten the URL. Please try again.');
@@ -39,17 +60,21 @@ const URLShortForm: React.FC = () => {
     }
 
     async function handleGenerateQR() {
-        if (shortUrl) {
+        if (shortUrl && shortUrl.shortId) {
             try {
+                const token = await getAccessTokenSilently();
                 const qrResult = await axios.get(`${SERVER_ENDPOINTS}/generate`, {
                     params: {
                         data: `http://localhost:4003/${shortUrl.shortId}`
                     },
-                    responseType: 'blob' // Important to handle binary data
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    responseType: 'blob'
                 });
 
                 const qrCodeUrl = URL.createObjectURL(qrResult.data);
-                setQrCodeUrl(qrCodeUrl); // Create a URL for the QR code image blob
+                setQrCodeUrl(qrCodeUrl);
             } catch (err: any) {
                 console.error('Error generating QR code:', err.response ? err.response.data : err.message);
                 setError('Failed to generate QR code. Please try again.');
@@ -58,16 +83,16 @@ const URLShortForm: React.FC = () => {
     }
 
     function isValidUrl(url: string): boolean {
-        const urlPattern = new RegExp('^(https?:\\/\\/)?' + // protocol
-            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|((\\d{1,3}\\.){3}\\d{1,3}))' + // domain name and extension
-            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-            '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-            '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
+        const urlPattern = new RegExp('^(https?:\\/\\/)?' +
+            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|((\\d{1,3}\\.){3}\\d{1,3}))' +
+            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' +
+            '(\\?[;&a-z\\d%_.~+=-]*)?' +
+            '(\\#[-a-z\\d_]*)?$', 'i');
         return !!urlPattern.test(url);
     }
 
     function handleCopy() {
-        if (shortUrl) {
+        if (shortUrl && shortUrl.shortId) {
             navigator.clipboard.writeText(`http://localhost:4003/${shortUrl.shortId}`);
         }
     }

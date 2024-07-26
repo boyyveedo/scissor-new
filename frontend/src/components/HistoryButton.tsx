@@ -9,7 +9,7 @@ const HistoryButton: React.FC = () => {
         try {
             const token = await getAccessTokenSilently();
             console.log(token)
-            const response = await axios.get("http://localhost:4003/analytics", {
+            const response = await axios.get("http://localhost:4003/history", {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`, // Include Auth0 access token

@@ -15,4 +15,5 @@ routes.get('/history', getLinkHistory);
 routes.get('/generate', getQRCode);
 routes.get('/:shortId', handleRedirect);
 
+
 export default routes;

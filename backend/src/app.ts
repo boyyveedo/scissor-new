@@ -3,13 +3,11 @@ import { Port } from './config/config';
 import bodyParser from 'body-parser';
 import routes from './routes';
 import { connectDB } from './database/mongoDb';
-import authMiddleware from './auth/auth0';
 import rateLimit from 'express-rate-limit';
 import cors from 'cors';
 import { corsOrigin } from './config/config';
-import { expressjwt, GetVerificationKey, Request as JWTRequest } from 'express-jwt';
+import { expressjwt, GetVerificationKey } from 'express-jwt';
 import JwksRsa from 'jwks-rsa';
-import axios from 'axios';
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (reason, promise) => {
@@ -23,7 +21,8 @@ app.use(cors({
     origin: corsOrigin
 }));
 
-export const verifyJwt = expressjwt({
+// JWT middleware configuration
+const jwtMiddleware = expressjwt({
     secret: JwksRsa.expressJwtSecret({
         cache: true,
         rateLimit: true,
@@ -35,15 +34,25 @@ export const verifyJwt = expressjwt({
     algorithms: ['RS256']
 }).unless({
     path: [
-        { url: '/shorten', methods: ['POST'] }, // Exclude the /shorten endpoint
-        { url: '/:shortId', methods: ['GET'] },// Example for a public GET route
+        { url: '/shorten', methods: ['POST'] },
         { url: '/', methods: ['GET'] },
+        { url: /^\/[a-zA-Z0-9_-]+$/, methods: ['GET'] },  // Regex to match shortId
     ]
 });
 
-app.use(verifyJwt);
+// Apply middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+// Debugging middleware to log headers and request path
+app.use((req: Request, res: Response, next: NextFunction) => {
+    console.log('Request Path:', req.path);
+    console.log('Request Method:', req.method);
+    console.log('Request Headers:', req.headers);
+    next();
+});
+
+app.use(jwtMiddleware);  // Apply JWT middleware after bodyParser but before routes
 
 // Rate limiting middleware
 const limiter = rateLimit({
@@ -52,14 +61,11 @@ const limiter = rateLimit({
     message: 'Too many requests from this IP, please try again later.'
 });
 app.use(limiter);
-// //app.get('*', (req: JWTRequest, res) => {
-//     console.log("auth object", req.auth)
-// })
 
+// Routes
 app.get('/', (req, res) => {
     res.send("WELCOME HOME");
 });
-
 app.use('/', routes);
 
 // Error handling middleware for rate limiting
@@ -69,6 +75,12 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     } else {
         next(err);
     }
+});
+
+// Global error handler
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+    console.error('Global Error Handler:', err);
+    res.status(err.status || 500).json({ error: err.message || 'Internal Server Error' });
 });
 
 app.listen(Port, () => {

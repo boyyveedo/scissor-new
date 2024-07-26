@@ -10,25 +10,28 @@ function isErrorWithMessage(error: unknown): error is { message: string } {
 }
 
 export async function createShortUrl(req: Request, res: Response): Promise<Response> {
-    const auth0Id = getAuth0UserId(req)
-    console.log({ user1: auth0Id })
-
-    if (!auth0Id) {
-        return res.status(401).json({ error: 'User not authenticated' });
-    }
-
-
     try {
+        const auth0Id = getAuth0UserId(req);
+        console.log({ user3: auth0Id });
+
+        if (!auth0Id) {
+            return res.status(401).json({ error: 'User not authenticated' });
+        }
+
         const { destination, customAlias } = req.body;
-        const newUrl = await createShortUrlService(destination, customAlias,);
+        const newUrl = await createShortUrlService(destination, auth0Id, customAlias);
         await newUrl.save();
-        return res.status(201).json({ newUrl });
+
+        // Log the response to verify the format
+        console.log('Server response:', newUrl);
+
+        // Return the newUrl object directly
+        return res.status(201).json(newUrl);
     } catch (error) {
         console.error("Error creating short URL:", error);
         return res.status(500).json({ error: "Internal Server Error" });
     }
 }
-
 export async function handleRedirect(req: Request, res: Response): Promise<void> {
     try {
         const { shortId } = req.params;
@@ -41,7 +44,7 @@ export async function handleRedirect(req: Request, res: Response): Promise<void>
             ipAddress: req.ip,
         };
 
-        await Analytics.create(clickData);
+        //await Analytics.create(clickData);
         return res.redirect(short.destination);
     } catch (error) {
         console.error('Error handling redirect:', error);
@@ -53,6 +56,8 @@ export async function getAnalytics(req: Request, res: Response) {
     try {
 
         const auth0Id = getAuth0UserId(req);
+        console.log({ user1: auth0Id })
+
 
         if (!auth0Id) {
             return res.status(401).json({ error: 'User not authenticated' });

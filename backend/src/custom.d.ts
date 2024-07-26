@@ -1,9 +1,10 @@
-import { Request } from 'express';
+// types.d.ts
+import 'express-jwt';
 
-interface User {
-    sub: string;
-}
-
-export interface CustomRequest extends Request {
-    user?: User;
+declare module 'express-jwt' {
+    export interface Request {
+        auth?: {
+            sub: string;
+        };
+    }
 }
