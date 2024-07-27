@@ -36,6 +36,7 @@ const jwtMiddleware = expressjwt({
     path: [
         { url: '/shorten', methods: ['POST'] },
         { url: '/', methods: ['GET'] },
+        { url: '/:shortId', methods: ['GET'] },
         { url: /^\/[a-zA-Z0-9_-]+$/, methods: ['GET'] },  // Regex to match shortId
     ]
 });

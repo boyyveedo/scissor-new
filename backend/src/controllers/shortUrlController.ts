@@ -36,22 +36,31 @@ export async function handleRedirect(req: Request, res: Response): Promise<void>
     try {
         const { shortId } = req.params;
         const short = await getShortUrlByShortId(shortId);
-        const clickData = {
+
+        if (!short) {
+            res.status(404).json({ error: 'Short URL not found' });
+            return;
+        }
+
+        const clickData: any = {
             shortId: short._id,
-            auth0Id: getAuth0UserId(req), // Assuming Auth0 user information is in req.user
             referrer: req.get('Referrer'),
             userAgent: req.get('User-Agent'),
             ipAddress: req.ip,
         };
 
-        //await Analytics.create(clickData);
-        return res.redirect(short.destination);
+        const auth0Id = getAuth0UserId(req); // Function to get Auth0 user ID, if available
+        if (auth0Id) {
+            clickData.auth0Id = auth0Id;
+        }
+
+        await Analytics.create(clickData);
+        res.redirect(short.destination);
     } catch (error) {
         console.error('Error handling redirect:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }
-
 export async function getAnalytics(req: Request, res: Response) {
     try {
 

@@ -18,7 +18,7 @@ const analyticsSchema = new Schema<Analytics>({
     },
     auth0Id: {
         type: String,
-        required: true,
+        required: false,
     },
     referrer: {
         type: String,
