@@ -39,35 +39,50 @@ const Main: React.FC = () => {
                 {links.length > 0 && <TiDeleteOutline className="btn-cross" onClick={hideLinks} />}
             </div>
             <section className="stats pb-11 lg:pb-20">
-                <h3 className="title pb-2">Explore Scissor</h3>
-                <p className="subtitle pb2">Scissor reliably creates custom URLs, QR codes, and provides advanced analytics to track click performance.</p>
+                <div className="mb-8">
+                    <h3 className="title pb-2">Explore Scissor</h3>
+                    <p className="subtitle pb-2">Scissor reliably creates custom URLs, QR codes, and provides advanced analytics to track click performance.</p>
+                </div>
+
                 <div className="flex justify-around flex-wrap">
-                    <div className="flex flex-col items-center p-2 shadow-md rounded-md text-center w-48">
+                    <div className="flex flex-col items-center shadow-2xl p-6 rounded-md text-center w-48 transform transition-transform duration-300 hover:scale-105 fade-in bg-white border border-black">
                         <img
                             src="https://www.svgrepo.com/show/525987/link-square.svg"
                             alt="Feature 1"
                             className="mb-4 mx-auto w-12 h-12"
                         />
-                        <h3 className="text-lg">Custom Url</h3>
-                        <p>Create custom short URLs and monitor their performance to understand user behavior and engagement.</p>
+                        <h3 className="text-2xl font-bold text-gray-800 mb-2">
+                            Custom Url
+                        </h3>
+                        <p className="text-gray-600 text-sm leading-relaxed">
+                            Create custom short URLs and monitor their performance to understand user behavior and engagement.
+                        </p>
                     </div>
-                    <div className="flex flex-col items-center p-2 shadow-md rounded-md text-center w-48">
+                    <div className="flex flex-col items-center shadow-2xl p-6 rounded-md text-center w-48 transform transition-transform duration-300 hover:scale-105 fade-in bg-white border border-black">
                         <img
-                            src="https://www.svgrepo.com/show/115934/qr-codes.svg"
-                            alt="Qr Code"
+                            src="https://www.svgrepo.com/show/525987/link-square.svg"
+                            alt="Feature 1"
                             className="mb-4 mx-auto w-12 h-12"
                         />
-                        <h3 className="text-lg">Qr Code</h3>
-                        <p> Generate QR codes for easy access and track scans to see their impact on visits and engagement.</p>
+                        <h3 className="text-2xl font-bold text-gray-800 mb-2">
+                            Qr Code
+                        </h3>
+                        <p className="text-gray-600 text-sm leading-relaxed">
+                            Generate QR codes for easy access and track scans to see their impact on visits and engagement.
+                        </p>
                     </div>
-                    <div className="flex flex-col items-center p-2 shadow-md rounded-md text-center w-48">
+                    <div className="flex flex-col items-center shadow-2xl p-6 rounded-md text-center w-48 transform transition-transform duration-300 hover:scale-105 fade-in bg-white border border-black">
                         <img
-                            src="https://www.svgrepo.com/show/501443/analytics.svg"
-                            alt="Analytics"
+                            src="https://www.svgrepo.com/show/525987/link-square.svg"
+                            alt="Feature 1"
                             className="mb-4 mx-auto w-12 h-12"
                         />
-                        <h3 className="text-lg">Analytics</h3>
-                        <p>Track link clicks and see how they drive website visits, conversions, and engagement.</p>
+                        <h3 className="text-2xl font-bold text-gray-800 mb-2">
+                            Analytics
+                        </h3>
+                        <p className="text-gray-600 text-sm leading-relaxed">
+                            Track link clicks and see how they drive website visits, conversions, and engagement.
+                        </p>
                     </div>
                 </div>
             </section>

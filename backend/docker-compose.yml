@@ -1,0 +1,14 @@
+services:
+  url-shortener-server:
+    restart: always
+    container_name: url-shortener-server
+    env_file:
+      - .env
+    environment: 
+      - NODE_ENV=production
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "4003:4003"
+    image: url-shortener-server:latest

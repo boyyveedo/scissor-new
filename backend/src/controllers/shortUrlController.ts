@@ -4,6 +4,8 @@ import { Analytics } from "../models/analytic.model";
 import { expressjwt, Request as JWTRequest } from "express-jwt";
 import { shortUrl } from "../models/shortUrl.model";
 import { getAuth0UserId } from "../auth/getAuth0UserId";
+import { clearLinkHistoryService } from "../services/shortUrlService";
+
 
 function isErrorWithMessage(error: unknown): error is { message: string } {
     return typeof error === 'object' && error !== null && 'message' in error;
@@ -56,6 +58,7 @@ export async function handleRedirect(req: Request, res: Response): Promise<void>
 
         await Analytics.create(clickData);
         res.redirect(short.destination);
+
     } catch (error) {
         console.error('Error handling redirect:', error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -89,65 +92,46 @@ export async function getAnalytics(req: Request, res: Response) {
 }
 
 
-// export async function getAnalytics(req: JWTRequest, res: Response) {
-//     try {
-//         const user = req.auth;
-//         console.log('user', user)
 
-//         if (!user) {
-//             return res.status(401).json({ error: "Unauthorized" });
-//         }
-
-//         const userId = user.sub;
-//         const data = await analytics.find({ user: userId }).lean(); // Filter analytics by user ID
-//         return res.status(200).json(data);
-//     } catch (error) {
-//         console.error('Error fetching analytics:', error);
-//         return res.status(500).json({ error: "Internal Server Error" });
-//     }
-// }
-
-// export async function getAnalytics(req: Request, res: Response) {
-//     try {
-//         const userId = getUserIdFromRequest(req);
-//         console.log(userId)
-//         if (!userId) {
-//             return res.status(401).json({ error: "User not authenticated" });
-//         }
-
-//         //Fetch analytics data specific to the user
-//         const data = await analytics.find({ userId }).lean();
-//         console.log(data)
-
-//         if (!data || data.length === 0) {
-//             return res.status(200).json({ error: "No analytics data found for this user" });
-//         }
-
-//         return res.status(200).json(data);
-//     } catch (error) {
-//         console.error('Error fetching analytics:', error);
-//         return res.status(500).json({ error: "Internal Server Error" });
-//     }
-// }
 
 
 export async function getLinkHistory(req: Request, res: Response) {
-    const auth0Id = getAuth0UserId(req)
-    console.log({ user: auth0Id })
+    const auth0Id = getAuth0UserId(req);
+    console.log({ user: auth0Id });
 
     if (!auth0Id) {
         return res.status(401).json({ error: 'User not authenticated' });
     }
 
     try {
-
         const userLinks = await shortUrl.find({ auth0Id }).lean();
         if (!userLinks || userLinks.length === 0) {
             return res.status(200).json({ message: 'No URLs found for this user' });
         }
+        // Log the retrieved documents to check their format
+        console.log(userLinks);
         return res.status(200).json(userLinks);
     } catch (error) {
         console.error('Error fetching link history:', error);
         return res.status(500).json({ error: "Internal Server Error" });
+    }
+}
+
+
+// Controller to handle clearing link history
+export async function handleClearHistory(req: Request, res: Response): Promise<Response> {
+    const auth0Id = getAuth0UserId(req);
+    console.log({ user: auth0Id });
+
+    if (!auth0Id) {
+        return res.status(401).json({ error: 'User not authenticated' });
+    }
+
+    try {
+        await clearLinkHistoryService(auth0Id);
+        return res.status(200).json({ message: 'History cleared successfully' });
+    } catch (error) {
+        console.error('Error clearing link history in controller:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
 }

@@ -10,8 +10,8 @@ const SignUpButton: React.FC = () => {
     }
 
     return (
-        <button onClick={() => loginWithRedirect({ screen_hint: 'signup' })}>
-            Sign Up
+        <button onClick={() => loginWithRedirect()}>
+            Get started
         </button>
     );
 };

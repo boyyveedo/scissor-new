@@ -27,6 +27,8 @@ const urlSchema = new mongoose.Schema({
         sparse: true, // Allows null values (useful for unique constraints)
         default: undefined, // Set default to undefined to avoid null values
     },
+    createdAt: { type: Date, default: Date.now },
+
 });
 
 export const shortUrl = mongoose.model<shortURL>('shortUrl', urlSchema);

@@ -15,3 +15,11 @@ export async function connectDB(): Promise<void> {
         console.error('MongoDB connection error:', error);
     }
 }
+export async function disconnectDB(): Promise<void> {
+    try {
+        await mongoose.disconnect();
+        console.log('MongoDB disconnected successfully');
+    } catch (error) {
+        console.error('MongoDB disconnection error:', error);
+    }
+}

@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
 import { BrowserRouter } from 'react-router-dom';
 import { Auth0Provider } from '@auth0/auth0-react';
 import App from './App';
+import './index.css'; // Assuming you have a global CSS file
 import reportWebVitals from './reportWebVitals';
 
 const redirectUri = window.location.origin;

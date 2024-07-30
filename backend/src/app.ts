@@ -13,10 +13,11 @@ import JwksRsa from 'jwks-rsa';
 process.on('unhandledRejection', (reason, promise) => {
     console.error('Unhandled Rejection at:', promise, 'reason:', reason);
     // Optionally, exit the process or perform other recovery actions
-    // process.exit(1);
+    process.exit(1);
 });
 
 const app = express();
+
 app.use(cors({
     origin: corsOrigin
 }));
@@ -41,7 +42,6 @@ const jwtMiddleware = expressjwt({
     ]
 });
 
-// Apply middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -53,7 +53,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     next();
 });
 
-app.use(jwtMiddleware);  // Apply JWT middleware after bodyParser but before routes
+app.use(jwtMiddleware);
 
 // Rate limiting middleware
 const limiter = rateLimit({
@@ -84,7 +84,15 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     res.status(err.status || 500).json({ error: err.message || 'Internal Server Error' });
 });
 
-app.listen(Port, () => {
-    console.log(`Application started at http://localhost:${Port}`);
-    connectDB();
-});
+export default app;
+
+// Server startup
+if (require.main === module) {
+    app.listen(Port, () => {
+        console.log(`Application started at http://localhost:${Port}`);
+        connectDB().catch((err) => {
+            console.error('Failed to connect to MongoDB:', err);
+            process.exit(1);
+        });
+    });
+}

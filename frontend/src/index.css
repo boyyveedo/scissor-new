@@ -19,6 +19,83 @@ body {
   padding-left: 10%;
   padding-right: 10%;
 }
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInFromLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px); /* Move from left */
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0); /* Final position */
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.fade-in {
+    animation: fadeIn 1s ease-out;
+}
+
+.fade-in-from-left {
+    animation: fadeInFromLeft 1s ease-out;
+}
+
+.slide-in {
+    animation: slideIn 1s ease-out;
+}
+
+
+/* Add this to your CSS file */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+/* Stylish Text */
+.text-lg {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.25rem; /* Adjust size as needed */
+    font-weight: 700; /* Bold */
+    color: #333; /* Dark color for text */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    letter-spacing: 0.5px; /* Slightly increased letter spacing */
+}
+
+.text-lg p {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.875rem; /* Smaller font size for paragraph */
+    color: #666; /* Lighter color for description */
+    line-height: 1.6; /* Adjust line height for readability */
+    margin: 0; /* Remove default margin */
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.05); /* Subtle shadow for paragraph text */
+}
+
+
+
 @media (max-width: 768px) {
   .padding-xy {
     padding-left: 5%;
@@ -300,3 +377,197 @@ form .btn-cta {
     width: 100%;
   }
 }
+
+/* URL History Page Styles */
+.url-history {
+  margin-top: 30px;
+  overflow: auto;
+  width: 100%;
+  max-width: 800px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 20px auto;
+  box-sizing: border-box;
+   animation: fadeIn 1s forwards;
+     opacity: 0;
+     
+
+}
+/* Fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.url-history h1 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.url-history button.url-history-button {
+  background-color: #f44336;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.url-history button.url-history-button:hover {
+  background-color: #d32f2f;
+}
+
+.url-history table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.url-history th,
+.url-history td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+}
+
+.url-history th {
+  font-weight: bold;
+}
+
+.url-history td:nth-child(1),
+.url-history td:nth-child(2),
+.url-history td:nth-child(3) {
+  word-break: break-all;
+}
+
+.url-history td:last-child {
+  width: 10%;
+}
+
+.copy-button {
+  background-color: #4285f4;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.copy-button:hover {
+  background-color: #357ae8;
+}
+
+.copy-message {
+  text-align: center;
+  color: #009688;
+  margin-top: 10px;
+}
+
+/* Responsive Styles */
+@media only screen and (max-width: 600px) {
+  .url-history th:nth-child(3),
+  .url-history td:nth-child(3) {
+    display: none;
+  }
+
+  .url-history td:last-child {
+    width: 20%;
+  }
+
+  .url-history button.url-history-button {
+    margin-top: 10px;
+  }
+
+  .App {
+    width: 100%;
+    padding: 10px;
+    height: 98vh;
+    min-width: 0;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .url-history td:first-child,
+  .url-history td:nth-child(2) {
+    word-break: break-word;
+  }
+}
+
+
+/* src/index.css */
+
+/* Analytics Page Styles */
+.analytics-page {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 40px auto;
+}
+
+.analytics-page h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 2rem;
+
+
+}
+
+.chart-container {
+  width: 100%;
+  height: 400px;
+}
+
+@media (max-width: 600px) {
+  .chart-container {
+    height: 300px;
+  }
+}
+
+@media (max-width: 400px) {
+  .chart-container {
+    height: 200px;
+  }
+}
+
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card h2 {
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+}
+
+.card p {
+    margin: 5px 0;
+}
+
+@media (max-width: 600px) {
+    .card {
+        width: 100%;
+    }
+}
+

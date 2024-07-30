@@ -1,37 +1,23 @@
 import React from 'react';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
+import { useNavigate } from 'react-router-dom';
+
 
 
 const AnalyticsButton: React.FC = () => {
-    const { getAccessTokenSilently } = useAuth0();
+    const navigate = useNavigate();
 
-    const handleCallApi = async () => {
-        try {
-            const token = await getAccessTokenSilently();
-            console.log(token)
-            const response = await axios.get("http://localhost:4003/analytics", {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`, // Include Auth0 access token
-                },
-            });
-            console.log(response.data);
-        } catch (error) {
-            console.error("Error calling protected API:", error);
-        }
+    const handleCallApi = () => {
+        navigate('/analytics'); // Navigate to the History page
     };
     return (
-        <div>
-            <button
-                onClick={handleCallApi}
-                className='bg-blue-500 text-white hover:bg-blue-700 rounded-md px-4 py-2'
-            >
-                Call API
-            </button>
-
-        </div>
-
+        <button
+            onClick={handleCallApi}
+            className='text-black px-4 py-2'
+        >
+            Analytics
+        </button>
     );
 };
 
