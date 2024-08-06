@@ -1,12 +1,16 @@
-// src/components/HistoryButton.tsx
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const HistoryButton: React.FC = () => {
+interface HistoryButtonProps {
+    onClick: () => void;
+}
+
+const HistoryButton: React.FC<HistoryButtonProps> = ({ onClick }) => {
     const navigate = useNavigate();
 
     const handleNavigation = () => {
-        navigate('/history'); // Navigate to the History page
+        navigate('/history');
+        onClick(); // Close the menu
     };
 
     return (

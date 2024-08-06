@@ -9,14 +9,16 @@ export const HomeSection: React.FC = () => {
                 <picture className="hero-image flex justify-center lg:justify-start pl-6 lg:pl-0">
                     <img src={heroImage} alt="Hero" className="h-auto max-w-full slide-in" />
                 </picture>
-                <div className="site-desc flex flex-col justify-center gap-6 lg:gap-5 px-6 lg:px-0 slide-in">
-                    <h1 className="title text-1xl text-center lg:text-left">
-                        Effortlessly short your URL🔗 with ease🌐
+                <div className="site-desc flex flex-col justify-center items-center lg:items-start gap-6 lg:gap-5 px-6 lg:px-0 slide-in">
+                    <h1 className="title text-2xl md:text-3xl lg:text-4xl font-bold text-center lg:text-left">
+                        Effortlessly shorten your URL🔗 with ease
                     </h1>
-                    <p className="subtitle text-center lg:text-left">
-                        Shorten your URL for easy sharing on social media, email, text messages, <br /> and more. Test it below and experience the convenience.
+                    <p className="subtitle text-center lg:text-left text-base md:text-lg lg:text-xl">
+                        Shorten your URL for easy sharing on social media, email, text messages,
+                        <br className="hidden lg:block" />
+                        and more. Test it below and experience the convenience.
                     </p>
-                    <NavLink to='/add-job' className='call text-white hover:bg-gray-900 hover:text-white rounded-md px-3 py-2'>
+                    <NavLink to='/add-job' className='call bg-indigo-600 text-white hover:bg-indigo-700 hover:text-white rounded-md px-4 py-2 text-center hidden lg:inline-block'>
                         Start for free
                     </NavLink>
                 </div>

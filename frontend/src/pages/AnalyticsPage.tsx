@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
 import { Bar } from 'react-chartjs-2';
-import 'chart.js/auto'; // Ensure you import Chart.js
+import 'chart.js/auto';
 
 const AnalyticsPage: React.FC = () => {
     const { getAccessTokenSilently } = useAuth0();
@@ -40,7 +40,7 @@ const AnalyticsPage: React.FC = () => {
 
     const processChartData = (data: any[]) => {
         const labels = data.map(item => new Date(item.timestamp).toLocaleDateString());
-        const clickCounts = data.map(item => item.clicks); // assuming 'clicks' is a field in your data
+        const clickCounts = data.map(item => Number(item.clicks) || 0); // Ensure clicks is a number
 
         setChartData({
             labels,
@@ -60,10 +60,10 @@ const AnalyticsPage: React.FC = () => {
         if (data.length === 0) return {};
 
         // Example aggregation: take the first item's fields as the representative data
-        const aggregatedData = data[0];
+        const aggregatedData = { ...data[0] };
 
-        // If you want to aggregate more fields, modify this accordingly
-        aggregatedData.clicks = data.reduce((sum, item) => sum + item.clicks, 0);
+        // Aggregate clicks or other fields as needed
+        aggregatedData.clicks = data.reduce((sum, item) => sum + Number(item.clicks || 0), 0);
 
         return aggregatedData;
     };
@@ -79,13 +79,13 @@ const AnalyticsPage: React.FC = () => {
                     label: function (tooltipItem: any) {
                         const item = analyticsData[tooltipItem.dataIndex];
                         return [
-                            `Short URL: ${item.shortId}`,
-                            `Original URL: ${item.originalUrl}`,
-                            `Clicks: ${item.clicks}`,
-                            `Referrer: ${item.referrer}`,
-                            `User Agent: ${item.userAgent}`,
-                            `IP Address: ${item.ipAddress}`,
-                            `Timestamp: ${new Date(item.timestamp).toLocaleString()}`
+                            `Short URL: ${item.shortId || 'N/A'}`,
+                            `Original URL: ${item.originalUrl || 'N/A'}`,
+                            `Clicks: ${item.clicks || 0}`,
+                            `Referrer: ${item.referrer || 'N/A'}`,
+                            `User Agent: ${item.userAgent || 'N/A'}`,
+                            `IP Address: ${item.ipAddress || 'N/A'}`,
+                            `Timestamp: ${item.timestamp ? new Date(item.timestamp).toLocaleString() : 'N/A'}`
                         ];
                     }
                 }
@@ -106,13 +106,13 @@ const AnalyticsPage: React.FC = () => {
             <div className="card-container">
                 {aggregatedData ? (
                     <div className="card">
-                        <h2>Short URL: {aggregatedData.shortId}</h2>
-                        <p>Original URL: {aggregatedData.originalUrl}</p>
-                        <p>Clicks: {aggregatedData.clicks}</p>
-                        <p>Referrer: {aggregatedData.referrer}</p>
-                        <p>User Agent: {aggregatedData.userAgent}</p>
-                        <p>IP Address: {aggregatedData.ipAddress}</p>
-                        <p>Timestamp: {new Date(aggregatedData.timestamp).toLocaleString()}</p>
+                        <h2>Short URL: {aggregatedData.shortId || 'N/A'}</h2>
+                        <p>Original URL: {aggregatedData.originalUrl || 'N/A'}</p>
+                        <p>Clicks: {aggregatedData.clicks || 0}</p>
+                        <p>Referrer: {aggregatedData.referrer || 'N/A'}</p>
+                        <p>User Agent: {aggregatedData.userAgent || 'N/A'}</p>
+                        <p>IP Address: {aggregatedData.ipAddress || 'N/A'}</p>
+                        <p>Timestamp: {aggregatedData.timestamp ? new Date(aggregatedData.timestamp).toLocaleString() : 'N/A'}</p>
                     </div>
                 ) : (
                     <p>No data available</p>

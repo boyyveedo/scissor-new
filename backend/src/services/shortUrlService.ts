@@ -17,10 +17,7 @@ export async function createShortUrlService(destination: string, auth0Id: string
         }
     }
 
-    // Generate a shortId if customAlias is not provided
     const shortId = customAlias || nanoid(6);
-
-    // Create the new URL document with all required fields
     const newUrl = new shortUrl({
         shortId,
         destination,

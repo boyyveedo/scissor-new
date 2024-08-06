@@ -50,12 +50,14 @@ const URLShortForm: React.FC = () => {
 
             if (result.data && result.data.shortId) {
                 setShortUrl(result.data);
+                setDestination(''); // Clear destination input
+                setCustomAlias(''); // Clear customAlias input
             } else {
                 setError('Unexpected response from the server');
             }
         } catch (err: any) {
             console.error('Error:', err.response ? err.response.data : err.message);
-            setError('Failed to shorten the URL. Please try again.');
+            setError('Failed to shorten the URL. Please Login.');
         }
     }
 

@@ -571,3 +571,41 @@ form .btn-cta {
     }
 }
 
+
+/* Media queries for mobile screens */
+@media (max-width: 768px) {
+    .chart-container {
+        height: 300px; /* Adjust height for smaller screens */
+    }
+
+    .card-container {
+        margin-top: 15px;
+    }
+
+    .card {
+        padding: 10px;
+    }
+
+    .analytics-page {
+        padding: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .chart-container {
+        height: 250px; /* Further adjustment for very small screens */
+    }
+
+    .card-container {
+        margin-top: 10px;
+    }
+
+    .card {
+        padding: 8px;
+        font-size: 14px; /* Adjust font size for smaller screens */
+    }
+
+    .analytics-page {
+        padding: 5px;
+    }
+}

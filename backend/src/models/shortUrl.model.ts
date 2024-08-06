@@ -20,7 +20,7 @@ const urlSchema = new mongoose.Schema({
     },
     destination: { type: String, required: true },
     clicks: { type: Number, required: true, default: 0 },
-    auth0Id: { type: String, required: true }, // Link to Auth0 user
+    auth0Id: { type: String, required: true }, 
     customAlias: {
         type: String,
         unique: true,

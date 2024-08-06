@@ -11,7 +11,7 @@ export const generateQRCode = async (data: string): Promise<string> => {
         url: 'https://qr-code-generator20.p.rapidapi.com/generateadvancebase64',
         params: {
             data: encodeURIComponent(data),
-            size: '196',
+            size: '190',
             margin: '10',
             label: 'Scissor',
             label_size: '20',

@@ -1,16 +1,18 @@
 import React from 'react';
-import axios from 'axios';
-import { useAuth0 } from '@auth0/auth0-react';
 import { useNavigate } from 'react-router-dom';
 
+interface AnalyticsButtonProps {
+    onClick: () => void;
+}
 
-
-const AnalyticsButton: React.FC = () => {
+const AnalyticsButton: React.FC<AnalyticsButtonProps> = ({ onClick }) => {
     const navigate = useNavigate();
 
     const handleCallApi = () => {
-        navigate('/analytics'); // Navigate to the History page
+        navigate('/analytics');
+        onClick(); // Close the menu
     };
+
     return (
         <button
             onClick={handleCallApi}
