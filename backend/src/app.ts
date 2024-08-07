@@ -8,6 +8,9 @@ import cors from 'cors';
 import { corsOrigin } from './config/config';
 import { expressjwt, GetVerificationKey } from 'express-jwt';
 import JwksRsa from 'jwks-rsa';
+import swaggerUi from 'swagger-ui-express';
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerDocument from './swaggerDefinition';
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (reason, promise) => {
@@ -21,6 +24,44 @@ const app = express();
 app.use(cors({
     origin: corsOrigin
 }));
+
+// Swagger setup
+const swaggerOptions = {
+    swaggerDefinition: swaggerDocument,
+    apis: ['./routes/*.ts'], // Path to the API docs
+};
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+
+// Middleware to add default authorization header to Swagger UI
+app.use('/api-docs', swaggerUi.serve, (req: Request, res: Response, next: NextFunction) => {
+    swaggerUi.setup(swaggerSpec, {
+        swaggerOptions: {
+            authAction: {
+                BearerAuth: {
+                    name: "BearerAuth",
+                    schema: {
+                        type: "http",
+                        in: "header",
+                        name: "Authorization",
+                        description: "",
+                    },
+                    value: "Bearer YOUR_DEFAULT_JWT_TOKEN_HERE" // Replace with your actual token for development
+                }
+            }
+        }
+    })(req, res, next);
+});
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+// Debugging middleware to log headers and request path
+app.use((req: Request, res: Response, next: NextFunction) => {
+    console.log('Request Path:', req.path);
+    console.log('Request Method:', req.method);
+    console.log('Request Headers:', req.headers);
+    next();
+});
 
 // JWT middleware configuration
 const jwtMiddleware = expressjwt({
@@ -39,18 +80,8 @@ const jwtMiddleware = expressjwt({
         { url: '/', methods: ['GET'] },
         { url: '/:shortId', methods: ['GET'] },
         { url: /^\/[a-zA-Z0-9_-]+$/, methods: ['GET'] },
+        { url: '/api-docs', methods: ['GET'] }, // Exclude api-docs from JWT authentication
     ]
-});
-
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-
-// Debugging middleware to log headers and request path
-app.use((req: Request, res: Response, next: NextFunction) => {
-    console.log('Request Path:', req.path);
-    console.log('Request Method:', req.method);
-    console.log('Request Headers:', req.headers);
-    next();
 });
 
 app.use(jwtMiddleware);
@@ -64,7 +95,7 @@ const limiter = rateLimit({
 app.use(limiter);
 
 // Routes
-app.get('/', (req, res) => {
+app.get('/', (req: Request, res: Response) => {
     res.send("WELCOME HOME");
 });
 app.use('/', routes);
