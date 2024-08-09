@@ -22,8 +22,10 @@ process.on('unhandledRejection', (reason, promise) => {
 const app = express();
 
 app.use(cors({
-    origin: corsOrigin
+    origin: corsOrigin,
 }));
+
+app.options('*', cors());
 
 // Swagger setup
 const swaggerOptions = {

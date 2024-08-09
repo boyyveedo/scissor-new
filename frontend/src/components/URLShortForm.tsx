@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import { SERVER_ENDPOINTS } from '../config';
 
-const apiUrl = 'http://localhost:4003/shorten';
+const apiUrl = `${SERVER_ENDPOINTS}/shorten`;
 
 const URLShortForm: React.FC = () => {
     const [destination, setDestination] = useState<string>('');
@@ -67,7 +67,7 @@ const URLShortForm: React.FC = () => {
                 const token = await getAccessTokenSilently();
                 const qrResult = await axios.get(`${SERVER_ENDPOINTS}/generate`, {
                     params: {
-                        data: `http://localhost:4003/${shortUrl.shortId}`
+                        data: `${SERVER_ENDPOINTS}/${shortUrl.shortId}`
                     },
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -95,7 +95,7 @@ const URLShortForm: React.FC = () => {
 
     function handleCopy() {
         if (shortUrl && shortUrl.shortId) {
-            navigator.clipboard.writeText(`http://localhost:4003/${shortUrl.shortId}`);
+            navigator.clipboard.writeText(`${SERVER_ENDPOINTS}/${shortUrl.shortId}`);
         }
     }
 
@@ -128,8 +128,8 @@ const URLShortForm: React.FC = () => {
             {shortUrl && (
                 <div className="flex flex-col items-center justify-center bg-grey text-center mt-4">
                     <div className="flex items-center justify-between">
-                        <a href={`http://localhost:4003/${shortUrl.shortId}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 break-all">
-                            {`http://localhost:4003/${shortUrl.shortId}`}
+                        <a href={`${SERVER_ENDPOINTS}/${shortUrl.shortId}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 break-all">
+                            {`${SERVER_ENDPOINTS}/${shortUrl.shortId}`}
                         </a>
                         <button onClick={handleCopy} className="px-2 py-1 bg-gray-300 text-gray-700 rounded-md ml-2 text-xs">
                             Copy
