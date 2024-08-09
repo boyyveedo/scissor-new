@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import { SERVER_ENDPOINTS } from '../config';
 
-const apiUrl = `${SERVER_ENDPOINTS}/shorten`;
+const apiUrl = 'https://scissor-tvhk.onrender.com/shorten'
 
 const URLShortForm: React.FC = () => {
     const [destination, setDestination] = useState<string>('');
