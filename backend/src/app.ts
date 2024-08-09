@@ -80,7 +80,7 @@ const jwtMiddleware = expressjwt({
         { url: '/', methods: ['GET'] },
         { url: '/:shortId', methods: ['GET'] },
         { url: /^\/[a-zA-Z0-9_-]+$/, methods: ['GET'] },
-        { url: '/api-docs', methods: ['GET'] }, // Exclude api-docs from JWT authentication
+        { url: '/api-docs', methods: ['GET'] },
     ]
 });
 

@@ -48,7 +48,7 @@ export async function handleRedirect(req: Request, res: Response): Promise<void>
             ipAddress: req.ip,
         };
 
-        const auth0Id = getAuth0UserId(req); // Function to get Auth0 user ID, if available
+        const auth0Id = getAuth0UserId(req);
         if (auth0Id) {
             clickData.auth0Id = auth0Id;
         }

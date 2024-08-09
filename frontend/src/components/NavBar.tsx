@@ -91,15 +91,15 @@ const Navbar: React.FC = () => {
                             </div>
                             {!isAuthenticated ? (
                                 <>
-                                    <button className='bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 w-full mb-2'>
+                                    <button className='bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 w-1/2 mb-2'>
                                         <SignUpButton />
                                     </button>
-                                    <button className='border border-indigo-600 text-indigo-600 py-2 px-4 rounded-md hover:bg-indigo-100 w-full'>
+                                    <button className='border border-indigo-600 text-indigo-600 py-2 px-4 rounded-md hover:bg-indigo-100 w-1/2'>
                                         <LoginButton />
                                     </button>
                                 </>
                             ) : (
-                                <button className='bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 w-full'>
+                                <button className='bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 w-1/2'>
                                     <LogoutButton />
                                 </button>
                             )}
