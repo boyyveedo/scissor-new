@@ -37,9 +37,12 @@ export async function handleRedirect(req: Request, res: Response): Promise<void>
         const short = await getShortUrlByShortId(shortId);
 
         if (!short) {
+            console.log(`Short URL not found for ID: ${shortId}`);
             res.status(404).json({ error: 'Short URL not found' });
             return;
         }
+
+        console.log(`Redirecting to destination: ${short.destination}`);
 
         const clickData: any = {
             shortId: short._id,
