@@ -21,18 +21,13 @@ process.on('unhandledRejection', (reason, promise) => {
 
 const app = express();
 
-const corsOrigin = ['http://localhost:3001', 'https://scissors-beta.vercel.app/']
+const corsOptions = {
+    origin: 'https://scissors-beta.vercel.app', // Frontend URL
+    methods: 'GET,POST,OPTIONS', // Allowed methods
+    allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
+};
 
-
-
-app.use(cors({
-    origin: corsOrigin,
-    methods: 'POST',
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
-    optionsSuccessStatus: 204
-}));
-
+app.use(cors(corsOptions));
 // Swagger setup
 const swaggerOptions = {
     swaggerDefinition: swaggerDocument,

@@ -45,7 +45,9 @@ const URLShortForm: React.FC = () => {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
+
                 },
+
             });
 
             if (result.data && result.data.shortId) {
