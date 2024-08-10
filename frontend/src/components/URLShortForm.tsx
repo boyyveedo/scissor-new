@@ -137,7 +137,7 @@ const URLShortForm: React.FC = () => {
                             Copy
                         </button>
                     </div>
-                    <button onClick={handleGenerateQR} className="mt-2 px-2 py-1 bg-green-500 text-white rounded-md text-xs">
+                    <button onClick={handleGenerateQR} className="mt-2 px-2 py-1 bg-indigo-200 text-indigo-700 rounded-md text-xs">
                         Generate QR
                     </button>
                 </div>
