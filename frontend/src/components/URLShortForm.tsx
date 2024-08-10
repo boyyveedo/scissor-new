@@ -41,14 +41,15 @@ const URLShortForm: React.FC = () => {
                 destination,
                 customAlias,
                 auth0Id,
-            }, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
+            }
+                , {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
 
-                },
+                    },
 
-            });
+                });
 
             if (result.data && result.data.shortId) {
                 setShortUrl(result.data);
@@ -69,7 +70,7 @@ const URLShortForm: React.FC = () => {
                 const token = await getAccessTokenSilently();
                 const qrResult = await axios.get(`${SERVER_ENDPOINTS}/generate`, {
                     params: {
-                        data: `http://localhost:4003/${shortUrl.shortId}`
+                        data: `https://scissor-456p.onrender.com/${shortUrl.shortId}`
                     },
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -97,7 +98,7 @@ const URLShortForm: React.FC = () => {
 
     function handleCopy() {
         if (shortUrl && shortUrl.shortId) {
-            navigator.clipboard.writeText(`http://localhost:4003/${shortUrl.shortId}`);
+            navigator.clipboard.writeText(`https://scissor-456p.onrender.com/${shortUrl.shortId}`);
         }
     }
 
@@ -130,8 +131,8 @@ const URLShortForm: React.FC = () => {
             {shortUrl && (
                 <div className="flex flex-col items-center justify-center bg-grey text-center mt-4">
                     <div className="flex items-center justify-between">
-                        <a href={`http://localhost:4003/${shortUrl.shortId}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 break-all">
-                            {`http://localhost:4003/${shortUrl.shortId}`}
+                        <a href={`https://scissor-456p.onrender.com/${shortUrl.shortId}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 break-all">
+                            {`https://scissor-456p.onrender.com/${shortUrl.shortId}`}
                         </a>
                         <button onClick={handleCopy} className="px-2 py-1 bg-gray-300 text-gray-700 rounded-md ml-2 text-xs">
                             Copy
