@@ -14,7 +14,7 @@ const AnalyticsPage: React.FC = () => {
         const fetchAnalytics = async () => {
             try {
                 const token = await getAccessTokenSilently();
-                const response = await axios.get('https://scissor-r7t6.onrender.com/analytics', {
+                const response = await axios.get('http://localhost:4003/analytics', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },

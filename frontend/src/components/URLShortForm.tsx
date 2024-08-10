@@ -67,7 +67,7 @@ const URLShortForm: React.FC = () => {
                 const token = await getAccessTokenSilently();
                 const qrResult = await axios.get(`${SERVER_ENDPOINTS}/generate`, {
                     params: {
-                        data: `https://scissor-r7t6.onrender.com/${shortUrl.shortId}`
+                        data: `http://localhost:4003/${shortUrl.shortId}`
                     },
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -95,9 +95,7 @@ const URLShortForm: React.FC = () => {
 
     function handleCopy() {
         if (shortUrl && shortUrl.shortId) {
-            const url = `https://scissor-r7t6.onrender.com/${shortUrl.shortId}`
-            navigator.clipboard.writeText(url);
-            console.log(`Copied URL: ${url}`); // Debugging message
+            navigator.clipboard.writeText(`http://localhost:4003/${shortUrl.shortId}`);
         }
     }
 
@@ -130,14 +128,14 @@ const URLShortForm: React.FC = () => {
             {shortUrl && (
                 <div className="flex flex-col items-center justify-center bg-grey text-center mt-4">
                     <div className="flex items-center justify-between">
-                        <a href={`https://scissor-r7t6.onrender.com/${shortUrl.shortId}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 break-all">
-                            {`https://scissor-r7t6.onrender.com/${shortUrl.shortId}`}
+                        <a href={`http://localhost:4003/${shortUrl.shortId}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 break-all">
+                            {`http://localhost:4003/${shortUrl.shortId}`}
                         </a>
                         <button onClick={handleCopy} className="px-2 py-1 bg-gray-300 text-gray-700 rounded-md ml-2 text-xs">
                             Copy
                         </button>
                     </div>
-                    <button onClick={handleGenerateQR} className="mt-2 px-2 py-1 bg-indigo-200 text-indigo-700 rounded-md text-xs">
+                    <button onClick={handleGenerateQR} className="mt-2 px-2 py-1 bg-green-500 text-white rounded-md text-xs">
                         Generate QR
                     </button>
                 </div>

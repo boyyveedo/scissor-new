@@ -25,8 +25,6 @@ app.use(cors({
     origin: corsOrigin,
 }));
 
-app.options('*', cors());
-
 // Swagger setup
 const swaggerOptions = {
     swaggerDefinition: swaggerDocument,
