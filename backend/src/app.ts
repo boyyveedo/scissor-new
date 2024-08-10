@@ -5,7 +5,7 @@ import routes from './routes';
 import { connectDB } from './database/mongoDb';
 import rateLimit from 'express-rate-limit';
 import cors from 'cors';
-import { corsOrigin } from './config/config';
+//import { corsOrigin } from './config/config';
 import { expressjwt, GetVerificationKey } from 'express-jwt';
 import JwksRsa from 'jwks-rsa';
 import swaggerUi from 'swagger-ui-express';
@@ -21,8 +21,16 @@ process.on('unhandledRejection', (reason, promise) => {
 
 const app = express();
 
+const corsOrigin = ['http://localhost:3001', 'https://scissors-beta.vercel.app/']
+
+
+
 app.use(cors({
     origin: corsOrigin,
+    methods: 'POST',
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+    optionsSuccessStatus: 204
 }));
 
 // Swagger setup
