@@ -53,7 +53,7 @@ Scissor is a URL shortening service that allows users to create short, customiza
 
 ## API Documentation
 
-The API is documented using OpenAPI. You can view the documentation [here](http://localhost:4003/api-docs/).
+The API is documented using OpenAPI. You can view the documentation [here](https://scissor-456p.onrender.com/api-docs/).
 
 ## Testing
 
