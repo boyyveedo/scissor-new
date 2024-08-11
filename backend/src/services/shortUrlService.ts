@@ -17,7 +17,7 @@ export async function createShortUrlService(destination: string, auth0Id: string
         }
     }
 
-    const shortId = customAlias || nanoid(6);
+    const shortId = customAlias || nanoid(4);
     const newUrl = new shortUrl({
         shortId,
         destination,

@@ -16,7 +16,7 @@ const HistoryPage: React.FC = () => {
         const fetchHistory = async () => {
             try {
                 const token = await getAccessTokenSilently();
-                const response = await axios.get('http://localhost:4003/history', {
+                const response = await axios.get('https://scissor-456p.onrender.com/history', {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`,
@@ -58,7 +58,7 @@ const HistoryPage: React.FC = () => {
     const handleClearHistory = async () => {
         try {
             const token = await getAccessTokenSilently();
-            const response = await axios.delete('http://localhost:4003/history', {
+            const response = await axios.delete('https://scissor-456p.onrender.com/history', {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
@@ -103,13 +103,13 @@ const HistoryPage: React.FC = () => {
                             <tr key={index}>
                                 <td>{item.destination}</td>
                                 <td>
-                                    <a href={`http://localhost:4003/${item.shortId}`} target="_blank" rel="noopener noreferrer">
-                                        {`http://localhost:4003/${item.shortId}`}
+                                    <a href={`https://scissor-456p.onrender.com/${item.shortId}`} target="_blank" rel="noopener noreferrer">
+                                        {item.shortId}
                                     </a>
                                 </td>
                                 <td>{item.createdAt ? new Date(item.createdAt).toLocaleString() : 'N/A'}</td>
                                 <td>
-                                    <button className="copy-button" onClick={() => handleCopy(`http://localhost:4003/${item.shortId}`)}>Copy</button>
+                                    <button className="copy-button" onClick={() => handleCopy(`https://scissor-456p.onrender.com/${item.shortId}`)}>Copy</button>
                                 </td>
                             </tr>
                         ))}

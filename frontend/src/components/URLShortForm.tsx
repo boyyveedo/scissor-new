@@ -132,7 +132,7 @@ const URLShortForm: React.FC = () => {
                 <div className="flex flex-col items-center justify-center bg-grey text-center mt-4">
                     <div className="flex items-center justify-between">
                         <a href={`https://scissor-456p.onrender.com/${shortUrl.shortId}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 break-all">
-                            https://${shortUrl.shortId}
+                            {shortUrl.shortId}
                         </a>
                         <button onClick={handleCopy} className="px-2 py-1 bg-gray-300 text-gray-700 rounded-md ml-2 text-xs">
                             Copy
