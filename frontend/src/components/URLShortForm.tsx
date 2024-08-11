@@ -11,6 +11,7 @@ const URLShortForm: React.FC = () => {
     const [shortUrl, setShortUrl] = useState<{ shortId: string } | null>(null);
     const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [copied, setCopied] = useState<boolean>(false); // New state for tracking copied status
     const { getAccessTokenSilently, user } = useAuth0();
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -41,15 +42,12 @@ const URLShortForm: React.FC = () => {
                 destination,
                 customAlias,
                 auth0Id,
-            }
-                , {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-
-                    },
-
-                });
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
 
             if (result.data && result.data.shortId) {
                 setShortUrl(result.data);
@@ -81,7 +79,7 @@ const URLShortForm: React.FC = () => {
                 const qrCodeUrl = URL.createObjectURL(qrResult.data);
                 setQrCodeUrl(qrCodeUrl);
             } catch (err: any) {
-                console.error('Error generating QR code:', err.response ? err.response.data : err.message);
+                console.error('Error generating QR code:', err.response ? err.message : err.response.data);
                 setError('Failed to generate QR code. Please try again.');
             }
         }
@@ -99,6 +97,8 @@ const URLShortForm: React.FC = () => {
     function handleCopy() {
         if (shortUrl && shortUrl.shortId) {
             navigator.clipboard.writeText(`https://scissor-456p.onrender.com/${shortUrl.shortId}`);
+            setCopied(true); // Set copied to true when link is copied
+            setTimeout(() => setCopied(false), 2000); // Reset copied state after 2 seconds
         }
     }
 
@@ -132,14 +132,17 @@ const URLShortForm: React.FC = () => {
                 <div className="flex flex-col items-center justify-center bg-grey text-center mt-4">
                     <div className="flex items-center justify-between">
                         <a href={`https://scissor-456p.onrender.com/${shortUrl.shortId}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 break-all">
-                            {shortUrl.shortId}
+                            sc.{shortUrl.shortId}
                         </a>
                         <button onClick={handleCopy} className="px-2 py-1 bg-gray-300 text-gray-700 rounded-md ml-2 text-xs">
                             Copy
                         </button>
+                        {copied && (
+                            <span className="ml-2 text-green-500 text-xs">Copied!</span>
+                        )}
                     </div>
                     <button onClick={handleGenerateQR} className="mt-2 px-2 py-1 bg-green-500 text-white rounded-md text-xs">
-                        Generate QR
+                        Generate QR Code
                     </button>
                 </div>
             )}

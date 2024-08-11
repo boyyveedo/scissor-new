@@ -16,7 +16,7 @@ const urlSchema = new mongoose.Schema({
         type: String,
         unique: true,
         required: true,
-        default: () => nanoid(6),
+        default: () => nanoid(4),
     },
     destination: { type: String, required: true },
     clicks: { type: Number, required: true, default: 0 },
