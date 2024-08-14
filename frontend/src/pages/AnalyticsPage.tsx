@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
+import { useAuth0 } from '@auth0/auth0-react';
 import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
 
@@ -31,11 +31,11 @@ const AnalyticsPage: React.FC = () => {
         fetchAnalytics();
 
         const id = setInterval(fetchAnalytics, 5000); // Fetch data every 5 seconds
-        return () => clearInterval(id); // Clear interval to prevent memory leaks
+        return () => clearInterval(id); // Clear interval directly to prevent memory leaks
     }, [getAccessTokenSilently]);
 
     const processChartData = (data: any[]) => {
-        const labels = data.map(item => item.shortId || 'N/A'); // Use shortId as labels
+        const labels = data.map(item => `https://scissor-456p.onrender.com/${item.shortId}`); // Use full URL as labels
         const clickCounts = data.map(item => Number(item.clicks) || 0);
 
         setChartData({
@@ -61,7 +61,7 @@ const AnalyticsPage: React.FC = () => {
                     label: function (tooltipItem: any) {
                         const item = analyticsData[tooltipItem.dataIndex];
                         return [
-                            `Short URL: ${item.shortId || 'N/A'}`,
+                            `Short URL: https://scissor-456p.onrender.com/${item.shortId}`, // Full URL in tooltip
                             `Clicks: ${item.clicks || 0}`,
                             `Referrer: ${item.referrer || 'N/A'}`,
                             `User Agent: ${item.userAgent || 'N/A'}`,
@@ -89,19 +89,17 @@ const AnalyticsPage: React.FC = () => {
                     <p>Loading analytics data...</p>
                 ) : analyticsData.length > 0 ? (
                     analyticsData.map((item, index) => (
-                        <div className="flex flex-col items-center justify-center bg-grey text-center mt-4" key={index}>
-                            <div className="flex items-center justify-between">
-                                <a href={`https://scissor-456p.onrender.com/${item.shortId}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 break-all">
-                                    Sc.is/{item.shortId}
+                        <div className="card" key={index}>
+                            <h2>
+                                Short URL: <a href={`https://scissor-456p.onrender.com/${item.shortId}`} target="_blank" rel="noopener noreferrer">
+                                    {item.shortId}
                                 </a>
-                            </div>
-                            <div className="card mt-2 px-2 py-1 bg-gray-100 rounded-md text-xs">
-                                <p>Clicks: {item.clicks || 0}</p>
-                                <p>Referrer: {item.referrer || 'N/A'}</p>
-                                <p>User Agent: {item.userAgent || 'N/A'}</p>
-                                <p>IP Address: {item.ipAddress || 'N/A'}</p>
-                                <p>Timestamp: {item.timestamp ? new Date(item.timestamp).toLocaleString() : 'N/A'}</p>
-                            </div>
+                            </h2>
+                            <p>Clicks: {item.clicks || 0}</p>
+                            <p>Referrer: {item.referrer || 'N/A'}</p>
+                            <p>User Agent: {item.userAgent || 'N/A'}</p>
+                            <p>IP Address: {item.ipAddress || 'N/A'}</p>
+                            <p>Timestamp: {item.timestamp ? new Date(item.timestamp).toLocaleString() : 'N/A'}</p>
                         </div>
                     ))
                 ) : (
@@ -113,6 +111,7 @@ const AnalyticsPage: React.FC = () => {
 };
 
 export default AnalyticsPage;
+
 
 
 
