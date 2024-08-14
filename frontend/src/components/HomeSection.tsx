@@ -1,8 +1,15 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import heroImage from '../images/illustration-working.svg';
+import { useAuth0 } from '@auth0/auth0-react';
 
 export const HomeSection: React.FC = () => {
+    const { loginWithRedirect, isAuthenticated } = useAuth0();
+    if (isAuthenticated) {
+        return null;
+    }
+
+
     return (
         <section className="hero py-6 lg:pt-7">
             <div className='hero-inner grid gap-7 lg:gap-0 grid-cols-1 lg:grid-cols-2'>
@@ -18,7 +25,7 @@ export const HomeSection: React.FC = () => {
                         <br className="hidden lg:block" />
                         and more. Test it below and experience the convenience.
                     </p>
-                    <NavLink to='/' className='call bg-indigo-600 text-white hover:bg-indigo-700 rounded-md w-64 h-12 text-center shadow-lg transition-all duration-300 flex items-center justify-center'>
+                    <NavLink to='/' className='call bg-indigo-600 text-white hover:bg-indigo-700 rounded-md w-64 h-12 text-center shadow-lg transition-all duration-300 flex items-center justify-center' onClick={() => loginWithRedirect()}>
                         Start for free
                     </NavLink>
                 </div>
