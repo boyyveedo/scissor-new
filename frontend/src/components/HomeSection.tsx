@@ -18,7 +18,7 @@ export const HomeSection: React.FC = () => {
                         <br className="hidden lg:block" />
                         and more. Test it below and experience the convenience.
                     </p>
-                    <NavLink to='/add-job' className='call bg-indigo-600 text-white hover:bg-indigo-700 rounded-md w-64 h-12 text-center shadow-lg transition-all duration-300 flex items-center justify-center'>
+                    <NavLink to='/' className='call bg-indigo-600 text-white hover:bg-indigo-700 rounded-md w-64 h-12 text-center shadow-lg transition-all duration-300 flex items-center justify-center'>
                         Start for free
                     </NavLink>
                 </div>

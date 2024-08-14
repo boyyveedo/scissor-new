@@ -111,7 +111,7 @@ const URLShortForm: React.FC = () => {
                             type="url"
                             value={destination}
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDestination(e.target.value)}
-                            placeholder="https://scissor.com"
+                            placeholder="Enter Url"
                             className="flex-1 px-4 py-2 border rounded-md"
                         />
                         <input

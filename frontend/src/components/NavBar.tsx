@@ -6,6 +6,7 @@ import AnalyticsButton from './AnalyticsButton';
 import HistoryButton from './HistoryButton';
 import LogoutButton from './LogoutButton';
 import { Link } from 'react-router-dom';
+import logo from '../sc.png';
 
 interface LinkClassParams {
     isActive: boolean;
@@ -24,47 +25,56 @@ const Navbar: React.FC = () => {
             : 'text-black hover:bg-indigo-800 hover:text-white rounded-md px-3 py-2';
 
     return (
-        <nav className='bg-white text-black relative'>
+        <nav className='bg-white text-black relative w-auto'>
             <div className='mx-auto max-w-7xl px-2 sm:px-6 lg:px-8'>
                 <div className='flex h-20 items-center justify-between'>
-                    <div className='flex items-center justify-between w-full md:flex-1 md:justify-start'>
-                        <Link to="/">
-                            <img className='logo h-10 w-auto' alt='Scissor' />
+                    <div className='flex items-center'>
+                        {/* Logo */}
+                        <Link to="/" className='flex items-center'>
+                            <img className='h-32 md:h-40 w-auto ml-4 md:ml-10' alt='Scissor' src={logo} />
                         </Link>
-                        <div className='hidden md:flex md:gap-4'>
-                            <div className='text-black hover:bg-indigo-800 hover:text-white rounded-md px-3 py-2'>
-                                <AnalyticsButton onClick={closeMenu} />
-                            </div>
-                            <div className='text-black hover:bg-indigo-800 hover:text-white rounded-md px-3 py-2'>
-                                <HistoryButton onClick={closeMenu} />
-                            </div>
+                    </div>
+
+                    {/* Hamburger Button */}
+                    <button
+                        className='md:hidden text-black focus:outline-none ml-auto mr-4'
+                        onClick={toggleMenu}
+                    >
+                        <svg className='h-6 w-6' fill='none' stroke='currentColor' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
+                            <path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M4 6h16M4 12h16m-7 6h7' />
+                        </svg>
+                    </button>
+
+                    {/* Desktop Menu */}
+                    <div className='hidden md:flex md:gap-4 ml-20'>
+                        <div className='text-black hover:bg-indigo-800 hover:text-white rounded-md px-3 py-2'>
+                            <AnalyticsButton onClick={closeMenu} />
                         </div>
-                        <div className='hidden md:flex gap-2 md:ml-auto'>
-                            {!isAuthenticated ? (
-                                <>
-                                    <div className='hit text-white hover:bg-indigo-800 hover:text-white rounded-md px-3 py-2'>
-                                        <LoginButton />
-                                    </div>
-                                    <div className='hit text-white hover:bg-indigo-800 hover:text-white rounded-md px-3 py-2'>
-                                        <SignUpButton />
-                                    </div>
-                                </>
-                            ) : (
+                        <div className='text-black hover:bg-indigo-800 hover:text-white rounded-md px-3 py-2'>
+                            <HistoryButton onClick={closeMenu} />
+                        </div>
+                    </div>
+
+                    {/* Auth Buttons */}
+                    <div className='hidden md:flex gap-2 ml-auto'>
+                        {!isAuthenticated ? (
+                            <>
                                 <div className='hit text-white hover:bg-indigo-800 hover:text-white rounded-md px-3 py-2'>
-                                    <LogoutButton />
+                                    <LoginButton />
                                 </div>
-                            )}
-                        </div>
-                        <button
-                            className='md:hidden text-black focus:outline-none'
-                            onClick={toggleMenu}
-                        >
-                            <svg className='h-6 w-6' fill='none' stroke='currentColor' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
-                                <path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M4 6h16M4 12h16m-7 6h7' />
-                            </svg>
-                        </button>
+                                <div className='hit text-white hover:bg-indigo-800 hover:text-white rounded-md px-3 py-2'>
+                                    <SignUpButton />
+                                </div>
+                            </>
+                        ) : (
+                            <div className='hit text-white hover:bg-indigo-800 hover:text-white rounded-md px-3 py-2'>
+                                <LogoutButton />
+                            </div>
+                        )}
                     </div>
                 </div>
+
+                {/* Mobile Dropdown Menu */}
                 {menuOpen && (
                     <>
                         {/* Overlay Background */}
