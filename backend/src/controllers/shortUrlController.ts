@@ -65,12 +65,49 @@ export async function handleRedirect(req: Request, res: Response): Promise<void>
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }
+// export async function getAnalytics(req: Request, res: Response) {
+//     try {
+
+//         const auth0Id = getAuth0UserId(req);
+//         console.log({ user1: auth0Id })
+
+
+//         if (!auth0Id) {
+//             return res.status(401).json({ error: 'User not authenticated' });
+//         }
+
+//         // Fetch all URLs created by the user
+//         const userUrls = await shortUrl.find({ auth0Id }).lean();
+
+//         // Extract shortId from the URLs
+//         const shortIds = userUrls.map(url => url._id);
+
+//         // Fetch analytics data for these shortIds
+//         const analyticsData = await Analytics.find({ shortId: { $in: shortIds } }).lean();
+
+//         return res.status(200).json({ analyticsData });
+//     } catch (error) {
+//         console.error('Error fetching user analytics:', error);
+//         res.status(500).json({ error: 'Internal Server Error' });
+//     }
+// }
+
+
+
+// Define the interface for AnalyticsData
+interface AnalyticsData {
+    shortId: string;
+    auth0Id: string;
+    referrer?: string;
+    userAgent?: string;
+    ipAddress?: string;
+    timestamp: Date;
+}
+
 export async function getAnalytics(req: Request, res: Response) {
     try {
-
         const auth0Id = getAuth0UserId(req);
-        console.log({ user1: auth0Id })
-
+        console.log({ user1: auth0Id });
 
         if (!auth0Id) {
             return res.status(401).json({ error: 'User not authenticated' });
@@ -83,7 +120,13 @@ export async function getAnalytics(req: Request, res: Response) {
         const shortIds = userUrls.map(url => url._id);
 
         // Fetch analytics data for these shortIds
-        const analyticsData = await Analytics.find({ shortId: { $in: shortIds } }).lean();
+        let analyticsData: AnalyticsData[] = await Analytics.find({ shortId: { $in: shortIds } }).lean();
+
+        // Convert ObjectId to string
+        analyticsData = analyticsData.map(item => ({
+            ...item,
+            shortId: item.shortId.toString() // Convert ObjectId to string
+        }));
 
         return res.status(200).json({ analyticsData });
     } catch (error) {
@@ -91,8 +134,6 @@ export async function getAnalytics(req: Request, res: Response) {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }
-
-
 
 
 

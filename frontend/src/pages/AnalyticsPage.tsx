@@ -16,7 +16,14 @@ const AnalyticsPage: React.FC = () => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                setAnalyticsData(response.data.analyticsData);
+
+                // Ensure shortId is in string format
+                const data = response.data.analyticsData.map((item: any) => ({
+                    ...item,
+                    shortId: item.shortId.toString()
+                }));
+
+                setAnalyticsData(data);
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching analytics:', error);
@@ -60,6 +67,7 @@ const AnalyticsPage: React.FC = () => {
 };
 
 export default AnalyticsPage;
+
 
 
 
