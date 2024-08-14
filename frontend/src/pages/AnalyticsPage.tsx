@@ -8,7 +8,7 @@ const AnalyticsPage: React.FC = () => {
     const { getAccessTokenSilently } = useAuth0();
     const [analyticsData, setAnalyticsData] = useState<any[]>([]);
     const [chartData, setChartData] = useState<any>({});
-    const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
         const fetchAnalytics = async () => {
@@ -23,19 +23,16 @@ const AnalyticsPage: React.FC = () => {
                 processChartData(response.data.analyticsData);
             } catch (error) {
                 console.error('Error fetching analytics:', error);
+            } finally {
+                setLoading(false);
             }
         };
 
         fetchAnalytics();
-
-        const id = setInterval(fetchAnalytics, 5000); // Fetch data every 5 seconds
-        setIntervalId(id);
-
-        return () => clearInterval(id); // Clear interval directly to prevent memory leaks
     }, [getAccessTokenSilently]);
 
     const processChartData = (data: any[]) => {
-        const labels = data.map(item => item.shortId || 'N/A'); // Use shortId as labels
+        const labels = data.map(item => item.shortId || 'N/A');
         const clickCounts = data.map(item => Number(item.clicks) || 0);
 
         setChartData({
@@ -62,7 +59,7 @@ const AnalyticsPage: React.FC = () => {
                         const item = analyticsData[tooltipItem.dataIndex];
                         return [
                             `Short URL: ${item.shortId || 'N/A'}`,
-                            `Original URL: ${item.originalUrl || 'N/A'}`,
+                            `Original URL: ${item.destination || 'N/A'}`,
                             `Clicks: ${item.clicks || 0}`,
                             `Referrer: ${item.referrer || 'N/A'}`,
                             `User Agent: ${item.userAgent || 'N/A'}`,
@@ -78,7 +75,7 @@ const AnalyticsPage: React.FC = () => {
     return (
         <div className="analytics-page">
             <h1>Analytics</h1>
-            <div className="chart-container">
+            <div className="chart-container" style={{ height: '400px', marginBottom: '20px' }}>
                 {chartData && chartData.labels ? (
                     <Bar data={chartData} options={chartOptions} />
                 ) : (
@@ -86,11 +83,17 @@ const AnalyticsPage: React.FC = () => {
                 )}
             </div>
             <div className="card-container">
-                {analyticsData.length > 0 ? (
+                {loading ? (
+                    <p>Loading analytics data...</p>
+                ) : analyticsData.length > 0 ? (
                     analyticsData.map((item, index) => (
                         <div className="card" key={index}>
-                            <h2>Short URL: {item.shortId || 'N/A'}</h2>
-                            <p>Original URL: {item.originalUrl || 'N/A'}</p>
+                            <h2>
+                                Short URL: <a href={`https://scissor-456p.onrender.com/${item.shortId}`} target="_blank" rel="noopener noreferrer">
+                                    Sc.is/{item.shortId}
+                                </a>
+                            </h2>
+                            <p>Original URL: <a href={item.destination} target="_blank" rel="noopener noreferrer">{item.destination}</a></p>
                             <p>Clicks: {item.clicks || 0}</p>
                             <p>Referrer: {item.referrer || 'N/A'}</p>
                             <p>User Agent: {item.userAgent || 'N/A'}</p>
@@ -107,6 +110,7 @@ const AnalyticsPage: React.FC = () => {
 };
 
 export default AnalyticsPage;
+
 
 
 

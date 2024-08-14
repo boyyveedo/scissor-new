@@ -19,6 +19,16 @@ body {
   padding-left: 10%;
   padding-right: 10%;
 }
+
+.card a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.card a:hover {
+    text-decoration: underline;
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;

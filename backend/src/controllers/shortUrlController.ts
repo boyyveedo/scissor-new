@@ -45,6 +45,7 @@ export async function handleRedirect(req: Request, res: Response): Promise<void>
         console.log(`Redirecting to destination: ${short.destination}`);
 
         const clickData: any = {
+            destination: short.destination,
             shortId: short._id,
             referrer: req.get('Referrer'),
             userAgent: req.get('User-Agent'),
