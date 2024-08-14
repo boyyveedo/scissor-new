@@ -21,18 +21,21 @@ const AnalyticsPage: React.FC = () => {
                 });
                 setAnalyticsData(response.data.analyticsData);
                 processChartData(response.data.analyticsData);
+                setLoading(false);
             } catch (error) {
                 console.error('Error fetching analytics:', error);
-            } finally {
                 setLoading(false);
             }
         };
 
         fetchAnalytics();
+
+        const id = setInterval(fetchAnalytics, 5000); // Fetch data every 5 seconds
+        return () => clearInterval(id); // Clear interval directly to prevent memory leaks
     }, [getAccessTokenSilently]);
 
     const processChartData = (data: any[]) => {
-        const labels = data.map(item => item.shortId || 'N/A');
+        const labels = data.map(item => item.shortId || 'N/A'); // Use shortId as labels
         const clickCounts = data.map(item => Number(item.clicks) || 0);
 
         setChartData({
@@ -59,7 +62,6 @@ const AnalyticsPage: React.FC = () => {
                         const item = analyticsData[tooltipItem.dataIndex];
                         return [
                             `Short URL: ${item.shortId || 'N/A'}`,
-                            `Original URL: ${item.destination || 'N/A'}`,
                             `Clicks: ${item.clicks || 0}`,
                             `Referrer: ${item.referrer || 'N/A'}`,
                             `User Agent: ${item.userAgent || 'N/A'}`,
@@ -93,7 +95,6 @@ const AnalyticsPage: React.FC = () => {
                                     Sc.is/{item.shortId}
                                 </a>
                             </h2>
-                            <p>Original URL: <a href={item.destination} target="_blank" rel="noopener noreferrer">{item.destination}</a></p>
                             <p>Clicks: {item.clicks || 0}</p>
                             <p>Referrer: {item.referrer || 'N/A'}</p>
                             <p>User Agent: {item.userAgent || 'N/A'}</p>
@@ -110,6 +111,7 @@ const AnalyticsPage: React.FC = () => {
 };
 
 export default AnalyticsPage;
+
 
 
 
