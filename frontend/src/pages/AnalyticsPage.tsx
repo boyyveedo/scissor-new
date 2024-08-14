@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
-import { Bar } from 'react-chartjs-2';
-import 'chart.js/auto';
 
 const AnalyticsPage: React.FC = () => {
     const { getAccessTokenSilently } = useAuth0();
     const [analyticsData, setAnalyticsData] = useState<any[]>([]);
-    const [chartData, setChartData] = useState<any>({});
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
@@ -20,7 +17,6 @@ const AnalyticsPage: React.FC = () => {
                     },
                 });
                 setAnalyticsData(response.data.analyticsData);
-                processChartData(response.data.analyticsData);
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching analytics:', error);
@@ -34,56 +30,9 @@ const AnalyticsPage: React.FC = () => {
         return () => clearInterval(id); // Clear interval directly to prevent memory leaks
     }, [getAccessTokenSilently]);
 
-    const processChartData = (data: any[]) => {
-        const labels = data.map(item => `https://scissor-456p.onrender.com/${item.shortId}`); // Use full URL as labels
-        const clickCounts = data.map(item => Number(item.clicks) || 0);
-
-        setChartData({
-            labels,
-            datasets: [
-                {
-                    label: 'Clicks',
-                    data: clickCounts,
-                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1,
-                },
-            ],
-        });
-    };
-
-    const chartOptions = {
-        maintainAspectRatio: false,
-        animation: { duration: 2000 },
-        plugins: {
-            tooltip: {
-                callbacks: {
-                    label: function (tooltipItem: any) {
-                        const item = analyticsData[tooltipItem.dataIndex];
-                        return [
-                            `Short URL: https://scissor-456p.onrender.com/${item.shortId}`, // Full URL in tooltip
-                            `Clicks: ${item.clicks || 0}`,
-                            `Referrer: ${item.referrer || 'N/A'}`,
-                            `User Agent: ${item.userAgent || 'N/A'}`,
-                            `IP Address: ${item.ipAddress || 'N/A'}`,
-                            `Timestamp: ${item.timestamp ? new Date(item.timestamp).toLocaleString() : 'N/A'}`
-                        ];
-                    }
-                }
-            }
-        }
-    };
-
     return (
         <div className="analytics-page">
             <h1>Analytics</h1>
-            <div className="chart-container" style={{ height: '400px', marginBottom: '20px' }}>
-                {chartData && chartData.labels ? (
-                    <Bar data={chartData} options={chartOptions} />
-                ) : (
-                    <p>Loading...</p>
-                )}
-            </div>
             <div className="card-container">
                 {loading ? (
                     <p>Loading analytics data...</p>
@@ -91,7 +40,7 @@ const AnalyticsPage: React.FC = () => {
                     analyticsData.map((item, index) => (
                         <div className="card" key={index}>
                             <h2>
-                                Short URL: <a href={`https://scissor-456p.onrender.com/${item.shortId}`} target="_blank" rel="noopener noreferrer">
+                                ShortId: <a href={`https://scissor-456p.onrender.com/${item.shortId}`} target="_blank" rel="noopener noreferrer">
                                     {item.shortId}
                                 </a>
                             </h2>
@@ -111,6 +60,7 @@ const AnalyticsPage: React.FC = () => {
 };
 
 export default AnalyticsPage;
+
 
 
 
