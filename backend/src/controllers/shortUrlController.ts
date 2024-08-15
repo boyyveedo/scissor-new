@@ -51,11 +51,11 @@ export async function handleRedirect(req: Request, res: Response): Promise<void>
 
         // Create an analytics entry
         const analyticsData = {
-            shortId: short._id,
+            shortUrl: short._id, // Use the _id of the short URL document
             referrer: req.get('Referrer') || 'Direct', // Default to 'Direct' if no referrer
             userAgent: req.get('User-Agent'),
             ipAddress: req.ip,
-            timestamp: new Date(),
+            destination: short.destination, // Add destination
         };
 
         // Log the analytics data for debugging
@@ -71,6 +71,7 @@ export async function handleRedirect(req: Request, res: Response): Promise<void>
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }
+
 
 export async function getAnalytics(req: Request, res: Response): Promise<Response> {
     try {
