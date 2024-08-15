@@ -94,7 +94,7 @@ routes.get('/analytics', cacheMiddleware, getAnalytics);
  *       '500':
  *         description: Internal Server Error
  */
-routes.get('/history', cacheMiddleware, getLinkHistory);
+routes.get('/history/', cacheMiddleware, getLinkHistory);
 
 /**
  * @openapi

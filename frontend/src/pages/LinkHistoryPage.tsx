@@ -65,7 +65,7 @@ const HistoryPage: React.FC = () => {
             });
 
             if (response.status === 200) {
-                setHistory([]);
+                setHistory([]); // Ensure this state update correctly reflects the cleared history
             } else {
                 setError('Failed to clear history.');
             }

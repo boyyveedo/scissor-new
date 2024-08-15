@@ -33,12 +33,15 @@ export async function createShortUrlService(destination: string, auth0Id: string
     return newUrl;
 }
 export async function getShortUrlByShortId(shortId: string) {
+    console.log('Fetching Short URL by ID:', shortId);
     const short = await shortUrl.findOne({ $or: [{ shortId }, { customAlias: shortId }] });
     if (!short) {
+        console.error('URL not found');
         throw new Error('URL not found');
     }
     short.clicks++;
     await short.save();
+    console.log('Short URL Clicks Updated:', short.clicks);
     return short;
 }
 

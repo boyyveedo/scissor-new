@@ -14,6 +14,7 @@ function isErrorWithMessage(error: unknown): error is { message: string } {
 export async function createShortUrl(req: Request, res: Response): Promise<Response> {
     try {
         const auth0Id = getAuth0UserId(req);
+        console.log(auth0Id)
 
         if (!auth0Id) {
             return res.status(401).json({ error: 'User not authenticated' });
@@ -34,107 +35,91 @@ export async function createShortUrl(req: Request, res: Response): Promise<Respo
 export async function handleRedirect(req: Request, res: Response): Promise<void> {
     try {
         const { shortId } = req.params;
-        const short = await getShortUrlByShortId(shortId);
+
+        // Find the short URL document using the shortId
+        const short = await shortUrl.findOne({ shortId });
 
         if (!short) {
-            console.log(`Short URL not found for ID: ${shortId}`);
-            res.status(404).json({ error: 'Short URL not found' });
+            console.error(`Short URL not found for ID: ${shortId}`);
+            res.sendStatus(404);
             return;
         }
 
-        console.log(`Redirecting to destination: ${short.destination}`);
+        // Increment the click count
+        short.clicks += 1;
+        await short.save();
 
-        const clickData: any = {
-            destination: short.destination,
+        // Create an analytics entry
+        const analyticsData = {
             shortId: short._id,
-            referrer: req.get('Referrer'),
+            referrer: req.get('Referrer') || 'Direct', // Default to 'Direct' if no referrer
             userAgent: req.get('User-Agent'),
             ipAddress: req.ip,
+            timestamp: new Date(),
         };
 
-        const auth0Id = getAuth0UserId(req);
-        if (auth0Id) {
-            clickData.auth0Id = auth0Id;
-        }
+        // Log the analytics data for debugging
+        console.log('Analytics data:', analyticsData);
 
-        await Analytics.create(clickData);
+        // Save analytics data to the database
+        await Analytics.create(analyticsData);
+
+        // Redirect to the destination URL
         res.redirect(short.destination);
-
     } catch (error) {
         console.error('Error handling redirect:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }
-// export async function getAnalytics(req: Request, res: Response) {
-//     try {
 
-//         const auth0Id = getAuth0UserId(req);
-//         console.log({ user1: auth0Id })
-
-
-//         if (!auth0Id) {
-//             return res.status(401).json({ error: 'User not authenticated' });
-//         }
-
-//         // Fetch all URLs created by the user
-//         const userUrls = await shortUrl.find({ auth0Id }).lean();
-
-//         // Extract shortId from the URLs
-//         const shortIds = userUrls.map(url => url._id);
-
-//         // Fetch analytics data for these shortIds
-//         const analyticsData = await Analytics.find({ shortId: { $in: shortIds } }).lean();
-
-//         return res.status(200).json({ analyticsData });
-//     } catch (error) {
-//         console.error('Error fetching user analytics:', error);
-//         res.status(500).json({ error: 'Internal Server Error' });
-//     }
-// }
-
-
-
-// Define the interface for AnalyticsData
-interface AnalyticsData {
-    shortId: string;
-    auth0Id: string;
-    referrer?: string;
-    userAgent?: string;
-    ipAddress?: string;
-    timestamp: Date;
-}
-
-export async function getAnalytics(req: Request, res: Response) {
+export async function getAnalytics(req: Request, res: Response): Promise<Response> {
     try {
         const auth0Id = getAuth0UserId(req);
-        console.log({ user1: auth0Id });
 
         if (!auth0Id) {
             return res.status(401).json({ error: 'User not authenticated' });
         }
 
-        // Fetch all URLs created by the user
-        const userUrls = await shortUrl.find({ auth0Id }).lean();
+        // Fetch short URLs created by the authenticated user
+        const userShortUrls = await shortUrl.find({ auth0Id }).lean();
 
-        // Extract shortId from the URLs
-        const shortIds = userUrls.map(url => url._id);
+        if (!userShortUrls || userShortUrls.length === 0) {
+            return res.status(404).json({ message: 'No short URLs found for this user' });
+        }
 
-        // Fetch analytics data for these shortIds
-        let analyticsData: AnalyticsData[] = await Analytics.find({ shortId: { $in: shortIds } }).lean();
+        // Extract short URL IDs from the user's short URLs
+        const shortUrlIds = userShortUrls.map(url => url._id.toString());
 
-        // Convert ObjectId to string
-        analyticsData = analyticsData.map(item => ({
-            ...item,
-            shortId: item.shortId.toString() // Convert ObjectId to string
-        }));
+        // Fetch analytics data related to the user's short URLs
+        const analyticsData = await Analytics.find({ shortUrl: { $in: shortUrlIds } }).lean();
 
-        return res.status(200).json({ analyticsData });
+        if (!analyticsData || analyticsData.length === 0) {
+            return res.status(404).json({ message: 'No analytics data found for this user' });
+        }
+
+        // Aggregate analytics data for each short URL
+        const aggregatedData = userShortUrls.map(shortUrl => {
+            const shortUrlIdStr = shortUrl._id.toString();
+            const relevantAnalytics = analyticsData.filter(data => data.shortUrl.toString() === shortUrlIdStr);
+            const totalClicks = relevantAnalytics.length;
+            const referrers = relevantAnalytics.map(entry => entry.referrer || 'Unknown');
+            const uniqueReferrers = [...new Set(referrers)];
+
+            return {
+                shortUrlId: shortUrl._id,
+                originalUrl: shortUrl.destination, // Include the original URL
+                totalClicks,
+                uniqueReferrers,
+                data: relevantAnalytics,
+            };
+        });
+
+        return res.status(200).json(aggregatedData);
     } catch (error) {
-        console.error('Error fetching user analytics:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        console.error('Error fetching analytics:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
 }
-
 
 
 export async function getLinkHistory(req: Request, res: Response) {

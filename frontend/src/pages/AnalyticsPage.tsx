@@ -2,64 +2,108 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 
+interface AnalyticsEntry {
+    _id: string;
+    shortId: string;
+    referrer: string;
+    userAgent: string;
+    ipAddress: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+interface AggregatedAnalytics {
+    shortUrlId: string;
+    totalClicks: number;
+    uniqueReferrers: string[];
+    ipAddresses: string[]; // Add a field for storing unique IP addresses
+}
+
 const AnalyticsPage: React.FC = () => {
     const { getAccessTokenSilently } = useAuth0();
-    const [analyticsData, setAnalyticsData] = useState<any[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
+    const [analytics, setAnalytics] = useState<AnalyticsEntry[]>([]);
+    const [error, setError] = useState<Error | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    const fetchAnalytics = async () => {
+        try {
+            const token = await getAccessTokenSilently();
+            const response = await axios.get('https://scissor-456p.onrender.com/analytics', {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            console.log(response.data); // Log response data to check its structure
+
+            // Adjust to handle the data structure you received
+            if (response.data && Array.isArray(response.data.analyticsData)) {
+                setAnalytics(response.data.analyticsData);
+            } else {
+                console.warn('Unexpected data structure:', response.data);
+                setAnalytics([]); // Set to empty array if unexpected structure
+            }
+        } catch (err) {
+            console.error('Error fetching analytics:', err);
+            setError(err as Error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchAnalytics = async () => {
-            try {
-                const token = await getAccessTokenSilently();
-                const response = await axios.get('https://scissor-456p.onrender.com/analytics', {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-
-                // Ensure shortId is in string format
-                const data = response.data.analyticsData.map((item: any) => ({
-                    ...item,
-                    shortId: item.shortId.toString()
-                }));
-
-                setAnalyticsData(data);
-                setLoading(false);
-            } catch (error) {
-                console.error('Error fetching analytics:', error);
-                setLoading(false);
-            }
-        };
-
         fetchAnalytics();
-
-        const id = setInterval(fetchAnalytics, 5000); // Fetch data every 5 seconds
-        return () => clearInterval(id); // Clear interval directly to prevent memory leaks
     }, [getAccessTokenSilently]);
 
+    if (loading) return <p>Loading...</p>;
+
+    if (error) return <p>Error loading analytics: {error.message}</p>;
+
+    // Count total clicks, unique referrers, and IP addresses
+    const aggregatedAnalytics = analytics.reduce<Record<string, AggregatedAnalytics>>((acc, entry) => {
+        if (!acc[entry.shortId]) {
+            acc[entry.shortId] = {
+                shortUrlId: entry.shortId,
+                totalClicks: 0,
+                uniqueReferrers: [],
+                ipAddresses: [], // Initialize IP addresses list
+            };
+        }
+        acc[entry.shortId].totalClicks += 1;
+
+        // Use a Set to gather unique referrers
+        const uniqueReferrersSet = new Set(acc[entry.shortId].uniqueReferrers);
+        uniqueReferrersSet.add(entry.referrer);
+
+        acc[entry.shortId].uniqueReferrers = Array.from(uniqueReferrersSet);
+
+        // Use a Set to gather unique IP addresses
+        const uniqueIpAddressesSet = new Set(acc[entry.shortId].ipAddresses);
+        uniqueIpAddressesSet.add(entry.ipAddress);
+
+        acc[entry.shortId].ipAddresses = Array.from(uniqueIpAddressesSet);
+
+        return acc;
+    }, {});
+
     return (
-        <div className="analytics-page">
-            <h1>Analytics</h1>
-            <div className="card-container">
-                {loading ? (
-                    <p>Loading analytics data...</p>
-                ) : analyticsData.length > 0 ? (
-                    analyticsData.map((item, index) => (
-                        <div className="card" key={index}>
-                            <h2>
-                                ShortId: <a href={`https://scissor-456p.onrender.com/${item.shortId}`} target="_blank" rel="noopener noreferrer">
-                                    {item.shortId}
-                                </a>
-                            </h2>
-                            <p>Clicks: {item.clicks || 0}</p>
-                            <p>Referrer: {item.referrer || 'N/A'}</p>
-                            <p>User Agent: {item.userAgent || 'N/A'}</p>
-                            <p>IP Address: {item.ipAddress || 'N/A'}</p>
-                            <p>Timestamp: {item.timestamp ? new Date(item.timestamp).toLocaleString() : 'N/A'}</p>
+        <div className="p-4">
+            <h1 className="text-2xl font-bold mb-4">Analytics Dashboard</h1>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {Object.values(aggregatedAnalytics).length > 0 ? (
+                    Object.values(aggregatedAnalytics).map((item) => (
+                        <div
+                            key={item.shortUrlId}
+                            className="bg-white rounded-lg shadow-md p-4 flex flex-col"
+                        >
+                            <h2 className="text-xl font-semibold">Short URL ID: {item.shortUrlId}</h2>
+                            <p className="mt-2">Total Clicks: {item.totalClicks}</p>
+                            <p className="mt-2">Unique Referrers: {item.uniqueReferrers.join(', ')}</p>
+                            <p className="mt-2">IP Addresses: {item.ipAddresses.join(', ')}</p> {/* Display IP addresses */}
                         </div>
                     ))
                 ) : (
-                    <p>No data available</p>
+                    <p>No analytics data available.</p>
                 )}
             </div>
         </div>
@@ -67,6 +111,17 @@ const AnalyticsPage: React.FC = () => {
 };
 
 export default AnalyticsPage;
+
+
+
+
+
+
+
+
+
+
+
 
 
 

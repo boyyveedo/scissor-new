@@ -1,39 +1,24 @@
 import mongoose, { Document, Schema } from 'mongoose';
-import { shortUrl } from './shortUrl.model';
 
 export interface Analytics extends Document {
-    shortId: mongoose.Schema.Types.ObjectId; // Reference to shortUrl model
-    auth0Id: string; // Auth0 user ID
-    referrer?: string; // Optional: Where the traffic came from
-    userAgent?: string; // Optional: Information about the user's browser
-    ipAddress?: string; // Optional: IP address of the user
-    timestamp: Date; // Timestamp for when the click occurred
+    shortUrl: mongoose.Schema.Types.ObjectId;
+    referrer?: string;
+    userAgent?: string;
+    ipAddress?: string;
+    createdAt?: Date;
+    destination?: string; // Add this line
 }
 
 const analyticsSchema = new Schema<Analytics>({
-    shortId: {
+    shortUrl: {
         type: Schema.Types.ObjectId,
-        ref: 'shortUrl', // Reference to the shortUrl model
+        ref: 'shortUrl',
         required: true,
     },
-    auth0Id: {
-        type: String,
-        required: false,
-    },
-    referrer: {
-        type: String,
-        default: 'Direct',
-    },
-    userAgent: {
-        type: String,
-    },
-    ipAddress: {
-        type: String,
-    },
-    timestamp: {
-        type: Date,
-        default: Date.now,
-    },
+    referrer: { type: String, default: 'Unknown' },
+    userAgent: { type: String, default: 'Unknown' },
+    ipAddress: { type: String, default: 'Unknown' },
+    destination: { type: String, required: true }, // Add this line
 }, { timestamps: true });
 
 export const Analytics = mongoose.model<Analytics>('Analytics', analyticsSchema);
