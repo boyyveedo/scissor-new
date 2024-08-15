@@ -26,13 +26,14 @@ const corsOptions = {
         'https://scissors-beta.vercel.app',
         'http://localhost:3001',
     ],
-    methods: 'GET,POST,OPTIONS',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
+    preflightContinue: false,
+    optionsSuccessStatus: 204
 };
 
 // Apply the CORS middleware
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions))
 // Swagger setup
 const swaggerOptions = {
     swaggerDefinition: swaggerDocument,
