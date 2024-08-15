@@ -51,7 +51,7 @@ export async function handleRedirect(req: Request, res: Response): Promise<void>
 
         // Create an analytics entry
         const analyticsData = {
-            shortUrl: short._id, // Use the _id of the short URL document
+            shortUrl: short._id, // Use the _id of t he short URL document
             referrer: req.get('Referrer') || 'Direct', // Default to 'Direct' if no referrer
             userAgent: req.get('User-Agent'),
             ipAddress: req.ip,

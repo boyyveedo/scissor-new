@@ -13,7 +13,7 @@ export const generateQRCode = async (data: string): Promise<string> => {
             data: encodeURIComponent(data),
             size: '190',
             margin: '10',
-            label: 'Scissor',
+            label: 'Scissors',
             label_size: '20',
             label_alignment: 'center',
             foreground_color: '000000',
