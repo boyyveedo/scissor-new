@@ -1,139 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useAuth0 } from '@auth0/auth0-react';
-
-interface AnalyticsEntry {
-    _id: string;
-    shortId: string; // Use shortId as per backend response
-    referrer: string;
-    userAgent: string;
-    ipAddress: string;
-    createdAt: string;
-    updatedAt: string;
-    destination: string; // Ensure destination is available
-}
-
-interface AggregatedAnalytics {
-    shortUrlId: string; // This should match what you're using in the backend response
-    totalClicks: number;
-    uniqueReferrers: string[];
-    ipAddresses: string[];
-    destination: string;
-}
-
-const AnalyticsPage: React.FC = () => {
-    const { getAccessTokenSilently } = useAuth0();
-    const [analytics, setAnalytics] = useState<AnalyticsEntry[]>([]);
-    const [error, setError] = useState<Error | null>(null);
-    const [loading, setLoading] = useState(true);
-
-    const fetchAnalytics = async () => {
-        try {
-            const token = await getAccessTokenSilently();
-            const response = await axios.get('https://scissor-456p.onrender.com/analytics', {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
-            // Handle the data structure with analyticsData property
-            if (response.data && Array.isArray(response.data.analyticsData)) {
-                setAnalytics(response.data.analyticsData);
-            } else {
-                console.warn('Unexpected data structure:', response.data);
-                setAnalytics([]); // Set to empty array if unexpected structure
-            }
-        } catch (err) {
-            console.error('Error fetching analytics:', err);
-            setError(err as Error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchAnalytics();
-    }, [getAccessTokenSilently]);
-
-    // Processing and rendering logic
-    // Ensure you use the correct field names from the response
-    const aggregatedAnalytics = analytics.reduce<Record<string, AggregatedAnalytics>>((acc, entry) => {
-        const shortId = entry.shortId;
-
-        if (!acc[shortId]) {
-            acc[shortId] = {
-                shortUrlId: shortId,
-                totalClicks: 0,
-                uniqueReferrers: [],
-                ipAddresses: [],
-                destination: entry.destination, // Make sure destination is populated
-            };
-        }
-        acc[shortId].totalClicks += 1;
-
-        // Use a Set to gather unique referrers
-        const uniqueReferrersSet = new Set(acc[shortId].uniqueReferrers);
-        uniqueReferrersSet.add(entry.referrer);
-        acc[shortId].uniqueReferrers = Array.from(uniqueReferrersSet);
-
-        // Use a Set to gather unique IP addresses
-        const uniqueIpAddressesSet = new Set(acc[shortId].ipAddresses);
-        uniqueIpAddressesSet.add(entry.ipAddress);
-        acc[shortId].ipAddresses = Array.from(uniqueIpAddressesSet);
-
-        return acc;
-    }, {});
-    return (
-        <div className="p-4">
-            <h1 className="text-2xl font-bold mb-4">Analytics Dashboard</h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {Object.values(aggregatedAnalytics).length > 0 ? (
-                    Object.values(aggregatedAnalytics).map((item) => (
-                        <div
-                            key={item.shortUrlId}
-                            className="bg-white rounded-lg shadow-md p-4 flex flex-col"
-                        >
-                            <h2 className="text-xl font-semibold">Original URL: {item.destination}</h2>
-                            <p className="mt-2">Total Clicks: {item.totalClicks}</p>
-                            <p className="mt-2">Unique Referrers: {item.uniqueReferrers.join(', ')}</p>
-                        </div>
-                    ))
-                ) : (
-                    <p>No analytics data available.</p>
-                )}
-            </div>
-        </div>
-    );
-}
-
-export default AnalyticsPage;
-
-
-
-
-
-
-
-
 // import React, { useEffect, useState } from 'react';
 // import axios from 'axios';
 // import { useAuth0 } from '@auth0/auth0-react';
 
 // interface AnalyticsEntry {
 //     _id: string;
-//     shortId: string;
+//     shortId: string; // Use shortId as per backend response
 //     referrer: string;
 //     userAgent: string;
 //     ipAddress: string;
 //     createdAt: string;
 //     updatedAt: string;
+//     destination: string; // Ensure destination is available
 // }
 
 // interface AggregatedAnalytics {
-//     shortUrlId: string;
+//     shortUrlId: string; // This should match what you're using in the backend response
 //     totalClicks: number;
 //     uniqueReferrers: string[];
-//     ipAddresses: string[]; // Add a field for storing unique IP addresses
+//     ipAddresses: string[];
+//     destination: string;
 // }
 
 // const AnalyticsPage: React.FC = () => {
@@ -151,9 +36,7 @@ export default AnalyticsPage;
 //                 },
 //             });
 
-//             console.log(response.data); // Log response data to check its structure
-
-//             // Adjust to handle the data structure you received
+//             // Handle the data structure with analyticsData property
 //             if (response.data && Array.isArray(response.data.analyticsData)) {
 //                 setAnalytics(response.data.analyticsData);
 //             } else {
@@ -172,36 +55,36 @@ export default AnalyticsPage;
 //         fetchAnalytics();
 //     }, [getAccessTokenSilently]);
 
-//     if (loading) return <p>Loading...</p>;
-
-//     if (error) return <p>Error loading analytics: {error.message}</p>;
-
-//     // Count total clicks, unique referrers, and IP addresses
+//     // Processing and rendering logic
+//     // Ensure you use the correct field names from the response
 //     const aggregatedAnalytics = analytics.reduce<Record<string, AggregatedAnalytics>>((acc, entry) => {
-//         if (!acc[entry.shortId]) {
-//             acc[entry.shortId] = {
-//                 shortUrlId: entry.shortId,
+//         const shortId = entry.shortId;
+
+//         if (!acc[shortId]) {
+//             acc[shortId] = {
+//                 shortUrlId: shortId,
 //                 totalClicks: 0,
 //                 uniqueReferrers: [],
-//                 ipAddresses: [], // Initialize IP addresses list
+//                 ipAddresses: [],
+//                 destination: entry.destination, // Make sure destination is populated
 //             };
 //         }
-//         acc[entry.shortId].totalClicks += 1;
+//         acc[shortId].totalClicks += 1;
 
 //         // Use a Set to gather unique referrers
-//         const uniqueReferrersSet = new Set(acc[entry.shortId].uniqueReferrers);
+//         const uniqueReferrersSet = new Set(acc[shortId].uniqueReferrers);
 //         uniqueReferrersSet.add(entry.referrer);
-
-//         acc[entry.shortId].uniqueReferrers = Array.from(uniqueReferrersSet);
+//         acc[shortId].uniqueReferrers = Array.from(uniqueReferrersSet);
 
 //         // Use a Set to gather unique IP addresses
-//         const uniqueIpAddressesSet = new Set(acc[entry.shortId].ipAddresses);
+//         const uniqueIpAddressesSet = new Set(acc[shortId].ipAddresses);
 //         uniqueIpAddressesSet.add(entry.ipAddress);
-
-//         acc[entry.shortId].ipAddresses = Array.from(uniqueIpAddressesSet);
+//         acc[shortId].ipAddresses = Array.from(uniqueIpAddressesSet);
 
 //         return acc;
 //     }, {});
+
+//     console.log('Aggregated Analytics:', aggregatedAnalytics); // Log for debugging
 
 //     return (
 //         <div className="p-4">
@@ -213,10 +96,9 @@ export default AnalyticsPage;
 //                             key={item.shortUrlId}
 //                             className="bg-white rounded-lg shadow-md p-4 flex flex-col"
 //                         >
-//                             <h2 className="text-xl font-semibold">Short URL ID: {item.shortUrlId}</h2>
+//                             <h2 className="text-xl font-semibold">Original URL: {item.destination}</h2>
 //                             <p className="mt-2">Total Clicks: {item.totalClicks}</p>
 //                             <p className="mt-2">Unique Referrers: {item.uniqueReferrers.join(', ')}</p>
-//                             <p className="mt-2">IP Addresses: {item.ipAddresses.join(', ')}</p> {/* Display IP addresses */}
 //                         </div>
 //                     ))
 //                 ) : (
@@ -225,9 +107,91 @@ export default AnalyticsPage;
 //             </div>
 //         </div>
 //     );
-// };
+// }
 
 // export default AnalyticsPage;
+
+
+
+
+
+
+
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useAuth0 } from '@auth0/auth0-react';
+
+interface AnalyticsEntry {
+    shortUrlId: string;
+    originalUrl: string;
+    totalClicks: number;
+    uniqueReferrers: string[];
+}
+
+const AnalyticsPage: React.FC = () => {
+    const { getAccessTokenSilently } = useAuth0();
+    const [analytics, setAnalytics] = useState<AnalyticsEntry[]>([]);
+    const [error, setError] = useState<Error | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    const fetchAnalytics = async () => {
+        try {
+            const token = await getAccessTokenSilently();
+            const response = await axios.get('https://scissor-456p.onrender.com/analytics', {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            console.log(response.data); // Log response data to check its structure
+
+            // Adjust to handle the data structure you received
+            if (response.data && Array.isArray(response.data)) {
+                setAnalytics(response.data);
+            } else {
+                console.warn('Unexpected data structure:', response.data);
+                setAnalytics([]); // Set to empty array if unexpected structure
+            }
+        } catch (err) {
+            console.error('Error fetching analytics:', err);
+            setError(err as Error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchAnalytics();
+    }, [getAccessTokenSilently]);
+
+    if (loading) return <p>Loading...</p>;
+
+    if (error) return <p>Error loading analytics: {error.message}</p>;
+
+    return (
+        <div className="p-4">
+            <h1 className="text-2xl font-bold mb-4">Analytics Dashboard</h1>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {analytics.length > 0 ? (
+                    analytics.map((item) => (
+                        <div
+                            key={item.shortUrlId}
+                            className="bg-white rounded-lg shadow-md p-4 flex flex-col"
+                        >
+                            <h2 className="text-xl font-semibold">Original URL: {item.originalUrl}</h2>
+                            <p className="mt-2">Total Clicks: {item.totalClicks}</p>
+                            <p className="mt-2">Unique Referrers: {item.uniqueReferrers.join(', ')}</p>
+                        </div>
+                    ))
+                ) : (
+                    <p>No analytics data available.</p>
+                )}
+            </div>
+        </div>
+    );
+};
+
+export default AnalyticsPage;
 
 
 
